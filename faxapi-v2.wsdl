@@ -1,0 +1,537 @@
+<wsdl:definitions name="ApiService" targetNamespace="https://api.monopond.com/fax/soap/v2" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="https://api.monopond.com/fax/soap/v2" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <wsdl:types>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="https://api.monopond.com/fax/soap/v2" xmlns:tns="https://api.monopond.com/fax/soap/v2" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="Blocklists" type="tns:apiFaxMessageBlocklist"/>
+<xs:element name="FaxDetails" type="tns:apiFaxMessageStatusDetails"/>
+<xs:element name="FaxMessage" nillable="true" type="xs:anyType"/>
+<xs:element name="FaxResults" type="tns:apiFaxMessageStatusResults"/>
+<xs:element name="FaxResultsTotals" type="tns:faxResultsTotals"/>
+<xs:element name="FaxStatusResponse" type="tns:faxStatusResponse"/>
+<xs:element name="FaxStatusTotals" type="tns:faxStatusTotals"/>
+<xs:complexType abstract="true" name="apiRequest">
+<xs:sequence/>
+</xs:complexType>
+<xs:complexType name="pauseFaxRequest">
+<xs:complexContent>
+<xs:extension base="tns:apiRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="MessageRef" type="xs:string"/>
+<xs:element minOccurs="0" name="SendRef" type="xs:string"/>
+<xs:element minOccurs="0" name="BroadcastRef" type="xs:string"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="apiResponse">
+<xs:sequence/>
+</xs:complexType>
+<xs:complexType name="faxStatusResponse">
+<xs:complexContent>
+<xs:extension base="tns:apiResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="FaxStatusTotals" type="tns:faxStatusTotals"/>
+<xs:element minOccurs="0" name="FaxResultsTotals" type="tns:faxResultsTotals"/>
+<xs:element minOccurs="0" name="FaxMessages">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="FaxMessage" type="tns:apiFaxMessageStatus"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="faxStatusTotals">
+<xs:sequence/>
+<xs:attribute name="pending" type="xs:long"/>
+<xs:attribute name="processing" type="xs:long"/>
+<xs:attribute name="queued" type="xs:long"/>
+<xs:attribute name="starting" type="xs:long"/>
+<xs:attribute name="sending" type="xs:long"/>
+<xs:attribute name="finalizing" type="xs:long"/>
+<xs:attribute name="done" type="xs:long"/>
+</xs:complexType>
+<xs:complexType name="faxResultsTotals">
+<xs:sequence/>
+<xs:attribute name="success" type="xs:long"/>
+<xs:attribute name="blocked" type="xs:long"/>
+<xs:attribute name="failed" type="xs:long"/>
+<xs:attribute name="totalAttempts" type="xs:long"/>
+<xs:attribute name="totalFaxDuration" type="xs:long"/>
+<xs:attribute name="totalPages" type="xs:long"/>
+</xs:complexType>
+<xs:complexType name="apiFaxMessageStatus">
+<xs:sequence>
+<xs:element minOccurs="0" name="FaxDetails" type="tns:apiFaxMessageStatusDetails"/>
+<xs:element minOccurs="0" name="FaxResults">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="FaxResult" type="tns:apiFaxMessageStatusResults"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+<xs:attribute name="messageRef" type="xs:string"/>
+<xs:attribute name="sendRef" type="xs:string"/>
+<xs:attribute name="broadcastRef" type="xs:string"/>
+<xs:attribute name="sendTo" type="tns:phoneNumber"/>
+<xs:attribute name="status" type="tns:faxUserStatus"/>
+</xs:complexType>
+<xs:simpleType name="phoneNumber">
+<xs:restriction base="xs:string"/>
+</xs:simpleType>
+<xs:complexType name="apiFaxMessageStatusDetails">
+<xs:sequence/>
+<xs:attribute name="sendFrom" type="xs:string"/>
+<xs:attribute name="resolution" type="tns:faxResolution"/>
+<xs:attribute name="retries" type="xs:int"/>
+<xs:attribute name="busyRetries" type="xs:int"/>
+<xs:attribute name="headerFormat" type="xs:string"/>
+</xs:complexType>
+<xs:complexType name="apiFaxMessageStatusResults">
+<xs:sequence>
+<xs:element minOccurs="0" name="Error" type="tns:faxErrorAdapter"/>
+</xs:sequence>
+<xs:attribute name="attempt" type="xs:int"/>
+<xs:attribute name="result" type="tns:faxResult"/>
+<xs:attribute name="cost" type="xs:string"/>
+<xs:attribute name="pages" type="xs:int"/>
+<xs:attribute name="totalFaxDuration" type="xs:int"/>
+<xs:attribute name="scheduledStartTime" type="xs:dateTime"/>
+<xs:attribute name="dateCallStarted" type="xs:dateTime"/>
+<xs:attribute name="dateCallEnded" type="xs:dateTime"/>
+</xs:complexType>
+<xs:complexType final="extension restriction" name="faxErrorAdapter">
+<xs:sequence/>
+<xs:attribute name="code" type="xs:string"/>
+<xs:attribute name="name" type="xs:string"/>
+</xs:complexType>
+<xs:complexType name="pauseFaxResponse">
+<xs:complexContent>
+<xs:extension base="tns:faxStatusResponse">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="webFaultBean">
+<xs:sequence>
+<xs:element minOccurs="0" name="message" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="resumeFaxRequest">
+<xs:complexContent>
+<xs:extension base="tns:apiRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="MessageRef" type="xs:string"/>
+<xs:element minOccurs="0" name="SendRef" type="xs:string"/>
+<xs:element minOccurs="0" name="BroadcastRef" type="xs:string"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="resumeFaxResponse">
+<xs:complexContent>
+<xs:extension base="tns:faxStatusResponse">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="faxStatusRequest">
+<xs:complexContent>
+<xs:extension base="tns:apiRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="MessageRef" type="xs:string"/>
+<xs:element minOccurs="0" name="SendRef" type="xs:string"/>
+<xs:element minOccurs="0" name="BroadcastRef" type="xs:string"/>
+<xs:element default="brief" minOccurs="0" name="Verbosity" type="tns:faxStatusLevel"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="stopFaxRequest">
+<xs:complexContent>
+<xs:extension base="tns:apiRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="MessageRef" type="xs:string"/>
+<xs:element minOccurs="0" name="SendRef" type="xs:string"/>
+<xs:element minOccurs="0" name="BroadcastRef" type="xs:string"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="stopFaxResponse">
+<xs:complexContent>
+<xs:extension base="tns:faxStatusResponse">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="sendFaxRequest">
+<xs:complexContent>
+<xs:extension base="tns:apiRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="BroadcastRef" type="xs:string"/>
+<xs:element minOccurs="0" name="SendRef" type="xs:string"/>
+<xs:element minOccurs="0" name="FaxMessages">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" name="FaxMessage" type="tns:apiFaxMessage"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="Documents">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="Document" type="tns:apiFaxDocument"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="Resolution" type="tns:faxResolution"/>
+<xs:element minOccurs="0" name="Blocklists" type="tns:apiFaxMessageBlocklist"/>
+<xs:element minOccurs="0" name="SendFrom" type="xs:string"/>
+<xs:element minOccurs="0" name="ScheduledStartTime" type="xs:string"/>
+<xs:element minOccurs="0" name="Retries" type="xs:int"/>
+<xs:element minOccurs="0" name="BusyRetries" type="xs:int"/>
+<xs:element minOccurs="0" name="HeaderFormat" type="xs:string"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="apiFaxMessage">
+<xs:sequence>
+<xs:element name="MessageRef" type="xs:string"/>
+<xs:element name="SendTo" type="xs:string"/>
+<xs:element minOccurs="0" name="SendFrom" type="xs:string"/>
+<xs:element minOccurs="0" name="Documents">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="Document" type="tns:apiFaxDocument"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="Resolution" type="tns:faxResolution"/>
+<xs:element minOccurs="0" name="Blocklists" type="tns:apiFaxMessageBlocklist"/>
+<xs:element minOccurs="0" name="ScheduledStartTime" type="xs:string"/>
+<xs:element minOccurs="0" name="Retries" type="xs:int"/>
+<xs:element minOccurs="0" name="BusyRetries" type="xs:int"/>
+<xs:element minOccurs="0" name="HeaderFormat" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="apiFaxDocument">
+<xs:sequence>
+<xs:element name="FileName" type="xs:string"/>
+<xs:element name="FileData" type="xs:string"/>
+<xs:element default="0" name="Order" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="apiFaxMessageBlocklist">
+<xs:sequence/>
+<xs:attribute name="dncr" type="xs:boolean"/>
+<xs:attribute name="fps" type="xs:boolean"/>
+<xs:attribute name="smartblock" type="xs:boolean"/>
+</xs:complexType>
+<xs:complexType name="sendFaxResponse">
+<xs:complexContent>
+<xs:extension base="tns:faxStatusResponse">
+<xs:sequence/>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:simpleType name="faxUserStatus">
+<xs:restriction base="xs:string">
+<xs:enumeration value="pending"/>
+<xs:enumeration value="processing"/>
+<xs:enumeration value="queued"/>
+<xs:enumeration value="starting"/>
+<xs:enumeration value="sending"/>
+<xs:enumeration value="pausing"/>
+<xs:enumeration value="paused"/>
+<xs:enumeration value="resuming"/>
+<xs:enumeration value="stopping"/>
+<xs:enumeration value="finalizing"/>
+<xs:enumeration value="done"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="faxResolution">
+<xs:restriction base="xs:string">
+<xs:enumeration value="normal"/>
+<xs:enumeration value="fine"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="faxResult">
+<xs:restriction base="xs:string">
+<xs:enumeration value="success"/>
+<xs:enumeration value="blocked"/>
+<xs:enumeration value="failed"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="faxError">
+<xs:restriction base="xs:string">
+<xs:enumeration value="DOCUMENT_UNSUPPORTED"/>
+<xs:enumeration value="DOCUMENT_FAILED_CONVERSION"/>
+<xs:enumeration value="FUNDS_INSUFFICIENT"/>
+<xs:enumeration value="FUNDS_FAILED"/>
+<xs:enumeration value="BLOCK_ACCOUNT"/>
+<xs:enumeration value="BLOCK_GLOBAL"/>
+<xs:enumeration value="BLOCK_SMART"/>
+<xs:enumeration value="BLOCK_DNCR"/>
+<xs:enumeration value="BLOCK_FPS"/>
+<xs:enumeration value="BLOCK_CUSTOM"/>
+<xs:enumeration value="FAX_NEGOTIATION_FAILED"/>
+<xs:enumeration value="FAX_EARLY_HANGUP"/>
+<xs:enumeration value="FAX_INCOMPATIBLE_MACHINE"/>
+<xs:enumeration value="FAX_BUSY"/>
+<xs:enumeration value="FAX_NUMBER_UNOBTAINABLE"/>
+<xs:enumeration value="FAX_SENDING_FAILED"/>
+<xs:enumeration value="FAX_CANCELLED"/>
+<xs:enumeration value="FAX_NO_ANSWER"/>
+<xs:enumeration value="FAX_UNKNOWN"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="faxStatusLevel">
+<xs:restriction base="xs:string">
+<xs:enumeration value="brief"/>
+<xs:enumeration value="send"/>
+<xs:enumeration value="details"/>
+<xs:enumeration value="results"/>
+<xs:enumeration value="all"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:element name="InternalServerException" nillable="true" type="tns:webFaultBean"/>
+<xs:element name="InvalidArgumentsException" nillable="true" type="tns:webFaultBean"/>
+<xs:element name="NoMessagesFoundException" nillable="true" type="tns:webFaultBean"/>
+<xs:element name="DocumentContentTypeNotFoundException" nillable="true" type="tns:webFaultBean"/>
+<xs:element name="PauseFaxRequest" nillable="true" type="tns:pauseFaxRequest"/>
+<xs:element name="PauseFaxResponse" nillable="true" type="tns:pauseFaxResponse"/>
+<xs:element name="ResumeFaxRequest" nillable="true" type="tns:resumeFaxRequest"/>
+<xs:element name="ResumeFaxResponse" nillable="true" type="tns:resumeFaxResponse"/>
+<xs:element name="FaxStatusRequest" nillable="true" type="tns:faxStatusRequest"/>
+<xs:element name="StopFaxRequest" nillable="true" type="tns:stopFaxRequest"/>
+<xs:element name="StopFaxResponse" nillable="true" type="tns:stopFaxResponse"/>
+<xs:element name="SendFaxRequest" nillable="true" type="tns:sendFaxRequest"/>
+<xs:element name="SendFaxResponse" nillable="true" type="tns:sendFaxResponse"/>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="DocumentContentTypeNotFoundException">
+    <wsdl:part element="tns:DocumentContentTypeNotFoundException" name="DocumentContentTypeNotFoundException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="FaxStatusResponse">
+    <wsdl:part element="tns:FaxStatusResponse" name="FaxStatusResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="PauseFaxResponse">
+    <wsdl:part element="tns:PauseFaxResponse" name="PauseFaxResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="InvalidArgumentsException">
+    <wsdl:part element="tns:InvalidArgumentsException" name="InvalidArgumentsException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SendFaxResponse">
+    <wsdl:part element="tns:SendFaxResponse" name="SendFaxResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ResumeFaxResponse">
+    <wsdl:part element="tns:ResumeFaxResponse" name="ResumeFaxResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="FaxStatus">
+    <wsdl:part element="tns:FaxStatusRequest" name="FaxStatusRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="StopFax">
+    <wsdl:part element="tns:StopFaxRequest" name="StopFaxRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SendFax">
+    <wsdl:part element="tns:SendFaxRequest" name="SendFaxRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="PauseFax">
+    <wsdl:part element="tns:PauseFaxRequest" name="PauseFaxRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="StopFaxResponse">
+    <wsdl:part element="tns:StopFaxResponse" name="StopFaxResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="NoMessagesFoundException">
+    <wsdl:part element="tns:NoMessagesFoundException" name="NoMessagesFoundException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="InternalServerException">
+    <wsdl:part element="tns:InternalServerException" name="InternalServerException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ResumeFax">
+    <wsdl:part element="tns:ResumeFaxRequest" name="ResumeFaxRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="Api">
+    <wsdl:operation name="PauseFax">
+      <wsdl:input message="tns:PauseFax" name="PauseFax">
+    </wsdl:input>
+      <wsdl:output message="tns:PauseFaxResponse" name="PauseFaxResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:InternalServerException" name="InternalServerException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NoMessagesFoundException" name="NoMessagesFoundException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:InvalidArgumentsException" name="InvalidArgumentsException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ResumeFax">
+      <wsdl:input message="tns:ResumeFax" name="ResumeFax">
+    </wsdl:input>
+      <wsdl:output message="tns:ResumeFaxResponse" name="ResumeFaxResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:InternalServerException" name="InternalServerException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NoMessagesFoundException" name="NoMessagesFoundException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:InvalidArgumentsException" name="InvalidArgumentsException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="FaxStatus">
+      <wsdl:input message="tns:FaxStatus" name="FaxStatus">
+    </wsdl:input>
+      <wsdl:output message="tns:FaxStatusResponse" name="FaxStatusResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:InternalServerException" name="InternalServerException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NoMessagesFoundException" name="NoMessagesFoundException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:InvalidArgumentsException" name="InvalidArgumentsException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="StopFax">
+      <wsdl:input message="tns:StopFax" name="StopFax">
+    </wsdl:input>
+      <wsdl:output message="tns:StopFaxResponse" name="StopFaxResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:InternalServerException" name="InternalServerException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NoMessagesFoundException" name="NoMessagesFoundException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:InvalidArgumentsException" name="InvalidArgumentsException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SendFax">
+      <wsdl:input message="tns:SendFax" name="SendFax">
+    </wsdl:input>
+      <wsdl:output message="tns:SendFaxResponse" name="SendFaxResponse">
+    </wsdl:output>
+      <wsdl:fault message="tns:InternalServerException" name="InternalServerException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:DocumentContentTypeNotFoundException" name="DocumentContentTypeNotFoundException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:NoMessagesFoundException" name="NoMessagesFoundException">
+    </wsdl:fault>
+      <wsdl:fault message="tns:InvalidArgumentsException" name="InvalidArgumentsException">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ApiServiceSoapBinding" type="tns:Api">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="PauseFax">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="PauseFax">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="PauseFaxResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="InternalServerException">
+        <soap:fault name="InternalServerException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NoMessagesFoundException">
+        <soap:fault name="NoMessagesFoundException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentsException">
+        <soap:fault name="InvalidArgumentsException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ResumeFax">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="ResumeFax">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="ResumeFaxResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="InternalServerException">
+        <soap:fault name="InternalServerException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NoMessagesFoundException">
+        <soap:fault name="NoMessagesFoundException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentsException">
+        <soap:fault name="InvalidArgumentsException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="FaxStatus">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="FaxStatus">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="FaxStatusResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="InternalServerException">
+        <soap:fault name="InternalServerException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NoMessagesFoundException">
+        <soap:fault name="NoMessagesFoundException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentsException">
+        <soap:fault name="InvalidArgumentsException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="StopFax">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="StopFax">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="StopFaxResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="InternalServerException">
+        <soap:fault name="InternalServerException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NoMessagesFoundException">
+        <soap:fault name="NoMessagesFoundException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentsException">
+        <soap:fault name="InvalidArgumentsException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SendFax">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="SendFax">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SendFaxResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="InternalServerException">
+        <soap:fault name="InternalServerException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="DocumentContentTypeNotFoundException">
+        <soap:fault name="DocumentContentTypeNotFoundException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="NoMessagesFoundException">
+        <soap:fault name="NoMessagesFoundException" use="literal"/>
+      </wsdl:fault>
+      <wsdl:fault name="InvalidArgumentsException">
+        <soap:fault name="InvalidArgumentsException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ApiService">
+    <wsdl:port binding="tns:ApiServiceSoapBinding" name="ApiPort">
+      <soap:address location="https://api.monopond.com/fax/soap/v2/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

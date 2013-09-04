@@ -14,7 +14,6 @@ class MonopondSOAPClientV2 {
         $this->_username=$username;
         $this->_password=$password;
         $this->_wsdl = $wsdl;
-        print_r($this->username);
         
         // Setting up SOAP ready headers with authentication
         $WSSEAuth = new SoapVar(array('ns1:Username' => $this->_username,'ns1:Password' => $this->_password),
@@ -63,7 +62,10 @@ class MonopondSOAPClientV2 {
         foreach($SendFaxRequest->FaxMessages as $faxMessage) {
             $faxMessage = $this->removeNullValues($faxMessage);
             // Assign SOAP ready documents array to the fax Message
-            $faxMessage->Documents = $this->convertDocumentArrayToSoapArray($faxMessage->Documents);
+            if (!empty($faxMessage->Documents)) {
+                $faxMessage->Documents = $this->convertDocumentArrayToSoapArray($faxMessage->Documents);    
+            }
+            
             
             // Add SOAP ready fax message to an array of fax messages
             $soapFaxMessages[] = new SoapVar($faxMessage,SOAP_ENC_OBJECT,null,null,"FaxMessage");
@@ -76,11 +78,12 @@ class MonopondSOAPClientV2 {
         $SendFaxRequest->FaxMessages = $soapFaxMessages;
         
         // Assign SOAP ready documents array to the send fax request
-        $SendFaxRequest->Documents = $this->convertDocumentArrayToSoapArray($SendFaxRequest->Documents);
+        if (!empty($SendFaxRequest->Documents)) {
+            $SendFaxRequest->Documents = $this->convertDocumentArrayToSoapArray($SendFaxRequest->Documents);    
+        }
         
         // Make fax request SOAP ready
         $SendFaxRequest = new SoapVar($SendFaxRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
-
 
         try{
                 // Try to call send fax
@@ -100,11 +103,10 @@ class MonopondSOAPClientV2 {
         $XMLResponseString = $this->_SoapClient->__getLastResponse();
         $XMLResponseString = str_replace("soap:", "", $XMLResponseString);
         $XMLResponseString = str_replace("ns2:", "", $XMLResponseString);
-        
+
         $element = new SimpleXMLElement($XMLResponseString);
         
         $messagesResponses = $element->Body->SendFaxResponse->FaxMessages;
-
 
         return new MonopondSendFaxResponse($messagesResponses);
     }
@@ -128,11 +130,8 @@ class MonopondSOAPClientV2 {
         $XMLResponseString = str_replace("ns2:", "", $XMLResponseString);
         
         $element = new SimpleXMLElement($XMLResponseString);
-        //print_r($element);
-
 
         $messagesResponses = $element->Body->FaxStatusResponse;
-           
         return new MonopondFaxStatusResponse($messagesResponses);         
     }
 
@@ -152,12 +151,10 @@ class MonopondSOAPClientV2 {
         $XMLResponseString = $this->_SoapClient->__getLastResponse();
         $XMLResponseString = str_replace("soap:", "", $XMLResponseString);
         $XMLResponseString = str_replace("ns2:", "", $XMLResponseString);
-        
+
         $element = new SimpleXMLElement($XMLResponseString);
 
-
         $messagesResponses = $element->Body->StopFaxResponse;
-
 
         return new MonopondStopFaxResponse($messagesResponses);         
     }
@@ -315,17 +312,19 @@ class MonopondFaxMessageResponse {
     public $faxDetails; 
     public $faxResults;
  
-    function __construct($response) {
-        $this->status = (string)$response["status"][0];
-        $this->sendTo = (string)$response["sendTo"][0];
-        $this->broadcastRef = (string)$response["broadcastRef"][0];
-        $this->sendRef = (string)$response["sendRef"][0];
-        $this->messageRef = (string)$response["messageRef"][0];
-        if ($response->FaxDetails != null) {
-           $this->faxDetails = new MonopondFaxDetailsResponse($response->FaxDetails);
+    function __construct($faxMessageResponse) {
+        $this->status = (string)$faxMessageResponse["status"][0];
+        $this->sendTo = (string)$faxMessageResponse["sendTo"][0];
+        $this->broadcastRef = (string)$faxMessageResponse["broadcastRef"][0];
+        $this->sendRef = (string)$faxMessageResponse["sendRef"][0];
+        $this->messageRef = (string)$faxMessageResponse["messageRef"][0];
+
+        if ($faxMessageResponse->FaxDetails != null) {
+           $this->faxDetails = new MonopondFaxDetailsResponse($faxMessageResponse->FaxDetails);
         }
-        if ($response->FaxResults != null) {
-           foreach($response->FaxResults->FaxResult as $faxResult) {
+
+        if (!empty($faxMessageResponse->FaxResults)) {
+           foreach($faxMessageResponse->FaxResults->FaxResult as $faxResult) {
             $this->faxResults[] = new MonopondFaxResultsResponse($faxResult);
            }
         }
@@ -379,10 +378,11 @@ class MonopondFaxStatusResponse {
     function __construct($response) {
         $this->FaxStatusTotals = new MonopondFaxStatusTotalsResponse($response->FaxStatusTotals);
         $this->FaxResultsTotals = new MonopondFaxResultsTotalsResponse($response->FaxResultsTotals);
-        if ($response->FaxMessages != null) {
+
+        if (!empty($response->FaxMessages)) {
            foreach ($response->FaxMessages->FaxMessage as $faxMessage) {                
             $this->FaxMessages[] =  new MonopondFaxMessageResponse($faxMessage);
-           }  
+           } 
         }
     }
 }

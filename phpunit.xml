@@ -1,0 +1,7 @@
+<phpunit>
+	<testsuites>
+		<testsuite name="MonoponSoapClientV2">
+			<directory>tests/MonopondSOAPClientTest.php</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
