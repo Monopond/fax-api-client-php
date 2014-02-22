@@ -4,10 +4,17 @@ api-client-php
 Monopond Fax API PHP Client
 
 #Building a Request
-To use Monopond SOAP PHP Client, start by including the `MonopondSOAPClient.php` (line 2) then creating an instance of the client by supplying your credentials (line 5). Your username and password should be enclosed in quotation marks.
+To use Monopond SOAP PHP Client, start by including the `MonopondSOAPClient.php` then creating an instance of the client by supplying your credentials. Your username and password should be enclosed in quotation marks.
 
 ```php
-code here
+<?php
+     include_once './MonopondSOAPClient.php';
+     
+     // TODO: Enter your own credentials here
+     $client = new MonopondSOAPClientV2("myusername", "mypassword", MPENV::Production);
+     
+     // TODO: Set up your request here
+ ?>
 ```
 
 ##SendFax
@@ -20,14 +27,87 @@ Your specific faxing requirements will dictate which send request type below sho
 To send a fax to a single destination a request similar to the following example can be used:
 
 ```php
-code here
+// TODO: Put your file path here
+ $filedata = fread(fopen("./test.txt", "r"), filesize("./test.txt"));
+ $filedata = base64_encode($filedata);
+ 
+ // TODO: Setup Document
+ $document = new MonopondDocument();
+ $document->FileName = "AnyFileName1.txt";
+ $document->FileData = $filedata;
+ $document->Order = 0;
+ 
+ // TODO: Setup FaxMessage
+ $faxMessage = new MonopondFaxMessage();
+ $faxMessage->MessageRef = "Testing-message-1";
+ $faxMessage->SendTo = "61011111111";
+ $faxMessage->SendFrom = "Test Fax";
+ $faxMessage->Documents = array($document);
+ $faxMessage->Resolution = "normal";
+ $faxMessage->Retries = 0;
+ $faxMessage->BusyRetries = 2;
+ 
+ // TODO: Setup FaxSendRequest 
+ $sendFaxRequest = new MonopondSendFaxRequest();
+ $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+ $sendFaxRequest->SendRef = "Send-Ref-1";
+ $sendFaxRequest->FaxMessages[] = $faxMessage;
+ // Call send fax method
+ $sendRespone = $client->sendFax($sendFaxRequest);
+ print_r($sendRespone);
 ```
 
 ###Sending multiple faxes:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
 
 ```php
-code here
+// TODO: Put your file path here
+ $filedata = fread(fopen("./test.txt", "r"), filesize("./test.txt"));
+ $filedata = base64_encode($filedata);
+ 
+ // TODO: Setup Document
+ $document = new MonopondDocument();
+ $document->FileName = "AnyFileName1.txt";
+ $document->FileData = $filedata;
+ $document->Order = 0;
+ $document2 = new MonopondDocument();
+ $document2->FileName = "AnyFileName2.txt";
+ $document2->FileData = $filedata;
+ $document2->Order = 0;
+ 
+ $document3 = new MonopondDocument();
+ $document3->FileName = "AnyFileName3.txt";
+ $document3->FileData = $filedata;
+ $document3->Order = 0;
+ 
+ // TODO: Setup FaxMessage
+ $faxMessage = new MonopondFaxMessage();
+ $faxMessage->MessageRef = "Testing-message-1";
+ $faxMessage->SendTo = "61011111111";
+ $faxMessage->SendFrom = "Test Fax";
+ $faxMessage->Documents = array($document);
+ $faxMessage->Resolution = "normal";
+ $faxMessage->Retries = 0;
+ $faxMessage->BusyRetries = 2;
+ $faxMessage2 = new MonopondFaxMessage();
+ $faxMessage2->MessageRef = "Testing-message-2";
+ $faxMessage2->SendTo = "61011111111";
+ $faxMessage2->SendFrom = "Test Fax 2";
+ $faxMessage2->Documents = array($document $document3);
+ $faxMessage2->Resolution = "normal";
+ $faxMessage2->Retries = 0;
+ $faxMessage2->BusyRetries = 3;
+ // TODO: Setup FaxSendRequest 
+ $sendFaxRequest = new MonopondSendFaxRequest();
+ $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+ $sendFaxRequest->SendRef = "Send-Ref-1";
+ $sendFaxRequest->FaxMessages[] = $faxMessage;
+ $sendFaxRequest->FaxMessages[] = $faxMessage2;
+ 
+
+ // Call send fax method
+ $sendRespone = $client->sendFax($sendFaxRequest);
+ print_r($sendRespone);
 ```
 
 ###Sending faxes to multiple destinations with the same document (broadcasting):
@@ -38,7 +118,34 @@ This method is recommended for broadcasting as it takes advantage of the multipl
 When sending multiple faxes in batch it is recommended to group them into requests of around 600 fax messages for optimal performance. If you are sending the same document to multiple destinations it is strongly advised to only attach the document once in the root of the send request rather than attaching a document for each destination.
 
 ```php
-code here
+ // TODO: Put your file path here
+ $filedata = fread(fopen("./test.txt", "r"), filesize("./test.txt"));
+ $filedata = base64_encode($filedata);
+ 
+ // TODO: Setup Document
+ $document = new MonopondDocument();
+ $document->FileName = "AnyFileName1.txt";
+ $document->FileData = $filedata;
+ $document->Order = 0;
+ 
+ // TODO: Setup FaxMessage
+ $faxMessage = new MonopondFaxMessage();
+ $faxMessage->MessageRef = "Testing-message-1";
+ $faxMessage->SendTo = "61011111111";
+ $faxMessage2 = new MonopondFaxMessage();
+ $faxMessage2->MessageRef = "Testing-message-2";
+ $faxMessage2->SendTo = "61011111111";
+ // TODO: Setup FaxSendRequest 
+ $sendFaxRequest = new MonopondSendFaxRequest();
+ $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+ $sendFaxRequest->SendRef = "Send-Ref-1";
+ $sendFaxRequest->FaxMessages[] = $faxMessage;
+ $sendFaxRequest->FaxMessages[] = $faxMessage2;
+ $sendFaxRequest->Documents = array($document);
+ $sendFaxRequest->SendFrom = "Test Fax";
+ // Call send fax method
+ $sendRespone = $client->sendFax($sendFaxRequest);
+ print_r($sendRespone);
 ```
 
 ###Sending Microsoft Documents With DocMergeData:
@@ -58,7 +165,7 @@ This is what the file looks like after the fields ```field1```,```field2``` and 
 The example below shows ```field1``` will be replaced by the value of ```Test```.
 
 ```php
-code here
+TODO: code here
 ```
 ###Sending Tiff and PDF files with StampMergeData:
 (This request only works in version 2.1(or higher) of the fax-api.)
@@ -86,7 +193,7 @@ The same tiff file, but this time, with a text stamp:
 The example below shows a PDF that will be stamped with the text “Hello” at xCoord=“1287” and yCoord=“421”, and an image at xCoord=“283” and yCoord=“120”
 
 ```php
-code here
+TODO: code here
 ```
 
 
@@ -256,21 +363,45 @@ There are multiple levels of verbosity available in the request; these are expla
 
 ###Sending a faxStatus Request with “brief” verbosity:
 ```php
-code here
+ // TODO: Setup FaxStatusRequest 
+ $faxStatusRequest = new MonopondFaxStatusRequest();
+ $faxStatusRequest->MessageRef = "Testing-message-1";
+$faxStatusRequest->Verbosity = "brief";
+ // Call fax status method
+ $faxStatus = $client->faxStatus($faxStatusRequest);
+ print_r($faxStatus);
 ```
 ###Sending a faxStatus Request with “send” verbosity:
 
 ```php
-code here
+ // TODO: Setup FaxStatusRequest 
+ $faxStatusRequest = new MonopondFaxStatusRequest();
+ $faxStatusRequest->MessageRef = "Testing-message-1";
+ $faxStatusRequest->Verbosity = "send";
+ // Call fax status method
+ $faxStatus = $client->faxStatus($faxStatusRequest);
+ print_r($faxStatus);
 ```
 ###Sending a faxStatus Request with “details” verbosity:
 ```php
-code here
+ // TODO: Setup FaxStatusRequest 
+ $faxStatusRequest = new MonopondFaxStatusRequest();
+ $faxStatusRequest->MessageRef = "Testing-message-1";
+ $faxStatusRequest->Verbosity = "details";
+ // Call fax status method
+ $faxStatus = $client->faxStatus($faxStatusRequest);
+ print_r($faxStatus);
 ```
 ###Sending a faxStatus Request with “results” verbosity:
 
 ```php
-code here
+ // TODO: Setup FaxStatusRequest 
+ $faxStatusRequest = new MonopondFaxStatusRequest();
+ $faxStatusRequest->MessageRef = "Testing-message-1";
+ $faxStatusRequest->Verbosity = "results";
+ // Call fax status method
+ $faxStatus = $client->faxStatus($faxStatusRequest);
+ print_r($faxStatus);
 ```
 ###Response
 The response received depends entirely on the verbosity level specified.
@@ -396,16 +527,27 @@ When making a stop request you must provide at least a `BroadcastRef`, `SendRef`
 
 ###StopFax Request limiting by BroadcastRef:
 ```php
-code here
+// TODO: Setup StopFaxRequest
+ $stopFaxRequest = new MonopondStopFaxRequest();
+ $stopFaxRequest->BroadcastRef = "Broadcast-test-1";
+ $stopFax = $client->stopFax($stopFaxRequest);
+ print_r($stopFax);
 ```
 ###StopFax Request limiting by SendRef:
 
 ```php
-code here
+$stopFaxRequest = new MonopondStopFaxRequest();
+ $stopFaxRequest->SendRef = "Send-Ref-1";
+ $stopFax = $client->stopFax($stopFaxRequest);
+ print_r($stopFax);
 ```
 ###StopFax Request limiting by MessageRef:
 ```php
-code here
+ // TODO: Setup StopFaxRequest
+ $stopFaxRequest = new MonopondStopFaxRequest();
+ $stopFaxRequest->MessageRef = "Testing-message-1";
+ $stopFax = $client->stopFax($stopFaxRequest);
+ print_r($stopFax);
 ```
 
 ###Response
@@ -434,17 +576,29 @@ When making a pause request, you must provide at least a `BroadcastRef`, `SendRe
 
 ###PauseFax Request limiting by BroadcastRef:
 ```php
-code here
+// TODO: Setup PauseFaxRequest
+ $pauseFaxRequest = new MonopondPauseFaxRequest();
+ $pauseFaxRequest->BroadcastRef = "Broadcast-test-1";
+ $pauseFax = $client->pauseFax($pauseFaxRequest);
+ print_r($pauseFax);
 ```
 
 ###PauseFax Request limiting by SendRef:
 ```php
-code here
+ // TODO: Setup PauseFaxRequest
+ $pauseFaxRequest = new MonopondPauseFaxRequest();
+ $pauseFaxRequest->SendRef = "Send-Ref-1";
+ $pauseFax = $client->pauseFax($pauseFaxRequest);
+ print_r($pauseFax);
 ```
 
 ###PauseFax Request limiting by MessageRef:
 ```php
-code here
+// TODO: Setup PauseFaxRequest
+ $pauseFaxRequest = new MonopondPauseFaxRequest();
+ $pauseFaxRequest->MessageRef = "Testing-message-1";
+ $pauseFax = $client->pauseFax($pauseFaxRequest);
+ print_r($pauseFax);
 ```
 ###Response
 The response received from a `PauseFaxRequest` is the same response you would receive when calling the `FaxStatus` method call with the `send` verbosity level. 
@@ -468,15 +622,26 @@ When making a resume request, you must provide at least a `BroadcastRef`, `SendR
 
 ###ResumeFax Request limiting by BroadcastRef:
 ```php
-code here
+ // TODO: Setup ResumeFaxRequest
+ $resumeFaxRequest = new MonopondResumeFaxRequest();
+ $resumeFaxRequest->BroadcastRef = "Broadcast-test-1";
+ $resumeFax = $client->resumeFax($resumeFaxRequest);
+ print_r($resumeFax);
 ```
 ###ResumeFax Request limiting by SendRef:
 ```php
-code here
+// TODO: Setup ResumeFaxRequest
+ $resumeFaxRequest = new MonopondResumeFaxRequest();
+ $resumeFaxRequest->SendRef = "Send-Ref-1";
+ $resumeFax = $client->resumeFax($resumeFaxRequest);
+ print_r($resumeFax);
 ```
 ###ResumeFax Request limiting by MessageRef:
 ```php
-code here
+ $resumeFaxRequest = new MonopondResumeFaxRequest();
+ $resumeFaxRequest->MessageRef = "Testing-message-1";
+ $resumeFax = $client->resumeFax($resumeFaxRequest);
+ print_r($resumeFax);
 ```
 
 
@@ -495,7 +660,7 @@ This function provides you with a method to generate a preview of a saved docume
 
 ###Sample Request
 ```php
-code here
+TODO: code here
 ```
 
 ###Request
@@ -587,7 +752,7 @@ This function allows you to upload a document and save it under a document refer
 ###Sample Request
 
 ```php
-code here
+TODO: code here
 ```
 
 ###Request
@@ -611,7 +776,7 @@ This function removes a saved fax document from the system.
 
 ###Sample Request
 ```php
-code here
+TODO: code here
 ```
 
 ###Request
