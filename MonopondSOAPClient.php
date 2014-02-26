@@ -97,7 +97,7 @@ class MonopondSOAPClientV2 {
 
 
         // Uncomment the line below to print the XML of the request just made  
-        //print_r($this->_SoapClient->__getLastResponse());
+        print_r($this->_SoapClient->__getLastResponse());
 
 
         $XMLResponseString = $this->_SoapClient->__getLastResponse();
@@ -111,6 +111,75 @@ class MonopondSOAPClientV2 {
         return new MonopondSendFaxResponse($messagesResponses);
     }
     
+	public function saveFaxDocument($saveFaxDocumentRequest) {
+		
+		$saveFaxDocumentRequest = $this-> removeNullValues($saveFaxDocumentRequest);
+		$saveFaxDocumentRequest = new SoapVar($saveFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
+	
+		try{
+		        // Try to call save fax
+		        $this->_SoapClient->SaveFaxDocument($saveFaxDocumentRequest);
+		}catch (SoapFault $exception) {
+		        // Print exception if one occured
+		        print_r($exception->getMessage());
+		        // Uncomment the line below to print the XML of the request just made  
+		        //print_r($this->_SoapClient->__getLastRequest());
+		}		
+		
+		// Uncomment the line below to print the XML of the request just made  
+		//print_r($this->_SoapClient->__getLastResponse());
+	
+		return new MonopondSaveFaxDocumentResponse();
+	}
+
+	public function previewFaxDocument($previewFaxDocumentRequest) {
+		$previewFaxDocumentRequest = $this-> removeNullValues($previewFaxDocumentRequest);
+		$previewFaxDocumentRequest = new SoapVar($previewFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
+	
+		try{
+		        // Try to call preview fax
+		        $this->_SoapClient->FaxDocumentPreview($previewFaxDocumentRequest);
+		}catch (SoapFault $exception) {
+		        // Print exception if one occured
+		        print_r($exception->getMessage());
+		        // Uncomment the line below to print the XML of the request just made  
+		        //print_r($this->_SoapClient->__getLastRequest());
+		}
+		
+		// Uncomment the line below to print the XML of the request just made   
+		print_r($this->_SoapClient->__getLastResponse());
+
+ 		$XMLResponseString = $this->_SoapClient->__getLastResponse();
+        $XMLResponseString = str_replace("soap:", "", $XMLResponseString);
+        $XMLResponseString = str_replace("ns2:", "", $XMLResponseString);
+
+        $element = new SimpleXMLElement($XMLResponseString);
+        
+        $messagesResponses = $element->Body->FaxDocumentPreviewResponse;
+		//print_r ($messagesResponses);
+        return new MonopondFaxPreviewResponse($messagesResponses);
+	} 
+
+	public function deleteFaxDocument($deleteFaxDocumentRequest) {
+		
+		$deleteFaxDocumentRequest = $this-> removeNullValues($deleteFaxDocumentRequest);
+		$deleteFaxDocumentRequest = new SoapVar($deleteFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
+	
+		try{
+		        // Try to call delete fax
+		        $this->_SoapClient->DeleteFaxDocument($deleteFaxDocumentRequest);
+		}catch (SoapFault $exception) {
+		        // Print exception if one occured
+		        print_r($exception->getMessage());
+		        // Uncomment the line below to print the XML of the request just made  
+		        //print_r($this->_SoapClient->__getLastRequest());
+		}		
+		
+		// Uncomment the line below to print the XML of the request just made  
+		//print_r($this->_SoapClient->__getLastResponse());
+	
+		return new MonopondDeleteFaxDocumentResponse();
+	}
 
 
     public function faxStatus($faxStatusRequest) {
@@ -216,9 +285,9 @@ class MonopondSOAPClientV2 {
 
 
 class MPENV {
-    const Production = "https://api.monopond.com/fax/soap/v2/?wsdl";
-    const Test = "https://test.api.monopond.com/fax/soap/v2/?wsdl";
-    const Local = "http://localhost:8000/fax/soap/v2?wsdl";
+    const Production = "https://api.monopond.com/fax/soap/v2.1/?wsdl";
+    const Test = "https://test.api.monopond.com/fax/soap/v2.1/?wsdl";
+    const Local = "http://192.168.1.200:8000/fax/soap/v2.1?wsdl";
 }
 
 
@@ -229,11 +298,42 @@ class clsWSSEToken {
     }
 }
 
+class MonopondMergeField {
+	public $Key;
+	public $Value;
+}
+
+class MonopondDocMergeData {
+	public 	$MergeField;
+}
+
+class MonopondStampMergeFieldKey {
+	public $xCoord;
+	public $yCoord;
+}
+
+class MonopondStampMergeFieldTextValue {
+	public $fontName;
+	public $fontSize;
+} 
+
+class MonopondStampMergeFieldImageValue {
+	public $fileName;
+	public $fileData;
+}
+
+class MonopondStampMergeData {
+	public $Key;
+	public $TextValue;
+	public $ImageValue;
+}
 
 class MonopondDocument {
     public $FileName;
     public $FileData;
     public $Order;
+    //public $DocMergeData;
+    //public $StampMergeData;
 }
 
 
@@ -247,6 +347,7 @@ class MonopondFaxMessage {
     public $Documents;
     public $ScheduledStartTime;
     public $HeaderFormat;
+    public $CLI;
 }
 
 
@@ -331,6 +432,44 @@ class MonopondFaxMessageResponse {
     }
 }
 
+/*SaveFax*/
+class MonopondSaveFaxDocumentRequest {
+	public $DocumentRef;
+	public $FileName;
+	public $FileData;
+}
+
+class MonopondSaveFaxDocumentResponse {
+	
+}
+
+/*DeleteFax*/
+class MonopondDeleteFaxDocumentRequest {
+	public $DocumentRef;
+}
+
+class MonopondDeleteFaxDocumentResponse {
+	
+}
+
+/*FaxPreview*/
+class MonopondFaxPreviewDocumentRequest {
+	public $Resolution;
+	public $DitheringTechnique;
+	public $DocMergeData;
+	public $StampMergeData;
+	public $DocumentRef;
+}
+
+class MonopondFaxPreviewResponse {
+	public $TiffPreview;
+	public $NumberOfPages;
+
+	function __construct($responses) {
+		$this->TiffPreview = (string)$responses->TiffPreview;
+		$this->NumberOfPages = (string)$responses->NumberOfPages;
+	}
+}
 
 /* SendFax */
 class MonopondSendFaxRequest{
@@ -344,6 +483,8 @@ class MonopondSendFaxRequest{
     public $Documents;
     public $ScheduledStartTime;
     public $HeaderFormat;
+    public $MustBeSentBeforeDate;
+    public $MaxFaxPages;
 }
 
 
@@ -355,8 +496,6 @@ class MonopondSendFaxResponse{
             $this->FaxMessages[] = new MonopondFaxMessageResponse($response);
         }   
     }
-
-
 }
 
 
