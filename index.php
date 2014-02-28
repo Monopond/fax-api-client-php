@@ -1,8 +1,12 @@
 <?php
     include_once './MonopondSOAPClient.php';
     
+	//Here are several examples on how to use the MonopondSOAPClient for php.
+	//If you want more examples, there are tests inside /tests/MonopondSOAPClient.php
+	//which you could run using phpunit.
+
     // TODO: Enter your own credentials here
-    $client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Production);
+    $client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
     
     // TODO: Put your file path here
     $filedata = fread(fopen("./test.txt", "r"), filesize("./test.txt"));

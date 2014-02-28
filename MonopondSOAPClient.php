@@ -2,7 +2,7 @@
 <?php
 
 
-class MonopondSOAPClientV2 {
+class MonopondSOAPClientV2_1 {
     private $_username;
     private $_password;
     private $_wsdl;
@@ -37,7 +37,6 @@ class MonopondSOAPClientV2 {
 
 					// Apply mergefield to document.
 					if (!empty($document->DocMergeData) && !empty($document->DocMergeData->MergeField)) {
-						//print_r($document->DocMergeData->MergeField);	
 						$mergeFields = null;
 						$mergeFields = $this->convertMergeFieldArrayToSoapArray($document->DocMergeData->MergeField);
 						$document->DocMergeData = $mergeFields;
@@ -94,7 +93,6 @@ class MonopondSOAPClientV2 {
 					$soapMergeField->Key = new SoapVar("<Key xCoord=\"" . $mergeField->Key->XCoord . "\" yCoord=\"".$mergeField->Key->YCoord."\"/>", XSD_ANYXML);
 					
 					if (!empty($mergeField->TextValue)) {
-						print_r($mergeField->TextValue);
 						$soapTextValue = new SoapVar("<TextValue fontName=\"".$mergeField->TextValue->FontName."\" fontSize=\"".$mergeField->TextValue->FontSize."\">".$mergeField->TextValue->TextValue."</TextValue>",XSD_ANYXML);
 						$soapMergeField->TextValue = $soapTextValue;
 					} elseif (!empty($mergeField->ImageValue)) {

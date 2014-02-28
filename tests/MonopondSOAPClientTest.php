@@ -2,7 +2,594 @@
 
     require_once dirname(__FILE__) . '/../MonopondSOAPClient.php';
 
-class MonopondSOAPClientV2Test extends PHPUnit_Framework_TestCase {
+class MonopondSOAPClientV2_1Test extends PHPUnit_Framework_TestCase {
+
+	public function testSendFaxSendSingleFax(){
+    	//needs actual connection
+    	//replace with valid password and password
+    	$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+    	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
+    	$filedata = base64_encode($filedata);
+
+    	$document = new MonopondDocument();
+    	$document->FileName = "sample.txt";
+    	$document->FileData = $filedata;
+    	$document->Order = 0;
+
+    	$faxMessage = new MonopondFaxMessage();
+    	$faxMessage->MessageRef = "Testing-message-1";
+    	$faxMessage->SendTo = "61011111111";
+    	$faxMessage->SendFrom = "Test Fax";
+    	$faxMessage->Documents = array($document);
+    	$faxMessage->Resolution = "normal";
+    	$faxMessage->Retries = 0;
+    	$faxMessage->BusyRetries = 2;
+
+    	$sendFaxRequest = new MonopondSendFaxRequest();
+    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+    	$sendFaxRequest->SendRef = "Send-Ref-1";
+    	$sendFaxRequest->FaxMessages[] = $faxMessage;
+
+    	$sendRespone = $client->sendFax($sendFaxRequest);
+    	// print_r($sendRespone);
+    }
+
+    public function testSendFaxMultipleFaxes(){
+		//needs actual connection
+    	//replace with valid password and password
+    	$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+    	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
+    	$filedata = base64_encode($filedata);
+
+    	$document = new MonopondDocument();
+    	$document->FileName = "sample.txt";
+    	$document->FileData = $filedata;
+    	$document->Order = 0;
+
+    	$document2 = new MonopondDocument();
+    	$document2->FileName = "sample.txt";
+    	$document2->FileData = $filedata;
+    	$document2->Order = 0;
+    
+    	$document3 = new MonopondDocument();
+    	$document3->FileName = "sample.txt";
+    	$document3->FileData = $filedata;
+    	$document3->Order = 0;
+
+    	$faxMessage = new MonopondFaxMessage();
+    	$faxMessage->MessageRef = "Testing-message-1";
+    	$faxMessage->SendTo = "61011111111";
+    	$faxMessage->SendFrom = "Test Fax";
+    	$faxMessage->Documents = array($document);
+    	$faxMessage->Resolution = "normal";
+    	$faxMessage->Retries = 0;
+    	$faxMessage->BusyRetries = 2;
+
+    	$faxMessage2 = new MonopondFaxMessage();
+    	$faxMessage2->MessageRef = "Testing-message-2";
+    	$faxMessage2->SendTo = "61011111111";
+    	$faxMessage2->SendFrom = "Test Fax 2";
+    	$faxMessage2->Documents = array($document2, $document3);
+    	$faxMessage2->Resolution = "normal";
+    	$faxMessage2->Retries = 0;
+    	$faxMessage2->BusyRetries = 3;
+
+    	$sendFaxRequest = new MonopondSendFaxRequest();
+    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+    	$sendFaxRequest->SendRef = "Send-Ref-1";
+    	$sendFaxRequest->FaxMessages[] = $faxMessage;
+    	$sendFaxRequest->FaxMessages[] = $faxMessage2;
+
+    	$sendRespone = $client->sendFax($sendFaxRequest);
+    	// print_r($sendRespone);
+
+    }
+
+    public function testSendFaxSendBroadcast(){
+    	//needs actual connection
+    	//replace with valid password and password
+    	$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+    	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
+    	$filedata = base64_encode($filedata);
+	
+		// TODO: Setup Document
+    	$document = new MonopondDocument();
+    	$document->FileName = "AnyFileName1.txt";
+    	$document->FileData = $filedata;
+    	$document->Order = 0;
+ 
+    	// TODO: Setup FaxMessage
+    	$faxMessage = new MonopondFaxMessage();
+    	$faxMessage->MessageRef = "Testing-message-1";
+    	$faxMessage->SendTo = "61011111111";
+
+    	$faxMessage2 = new MonopondFaxMessage();
+    	$faxMessage2->MessageRef = "Testing-message-2";
+    	$faxMessage2->SendTo = "61011111111";
+
+    	// TODO: Setup FaxSendRequest 
+    	$sendFaxRequest = new MonopondSendFaxRequest();
+    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+    	$sendFaxRequest->SendRef = "Send-Ref-1";
+    	$sendFaxRequest->FaxMessages[] = $faxMessage;
+    	$sendFaxRequest->FaxMessages[] = $faxMessage2;
+    	$sendFaxRequest->Documents = array($document);
+    	$sendFaxRequest->SendFrom = "Test Fax";
+
+    	// Call send fax method
+    	$sendRespone = $client->sendFax($sendFaxRequest);
+    	// print_r($sendRespone);
+    }
+
+	public function testSendFax_DocMergeField(){
+		//needs actual connection
+    	//replace with valid password and password
+    	$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+    	$filedata = fread(fopen("./tests/test.docx", "r"), filesize("./tests/test.docx"));
+    	$filedata = base64_encode($filedata);
+
+		//TODO: Setup DocMergeFields
+		$mergeField1 = new MonopondDocMergeField();
+		$mergeField1->Key="field1";
+		$mergeField1->Value="Test";
+
+		$mergeField2 = new MonopondDocMergeField();
+		$mergeField2->Key="field2";
+		$mergeField2->Value="Test2";
+
+		//TODO: transform mergeFields into an array 
+		$docMergeData = new MonopondDocMergeData();
+		$docMergeData->MergeField = array($mergeField1, $mergeField2);
+		
+		//TODO: Setup Document
+    	$document = new MonopondDocument();
+    	$document->FileName = "sample.docx";
+    	$document->FileData = $filedata;
+    	$document->Order = 0;
+		$document->DocMergeData = $docMergeData;
+
+    	$faxMessage = new MonopondFaxMessage();
+    	$faxMessage->MessageRef = "Testing-message-1";
+    	$faxMessage->SendTo = "61011111111";
+    	$faxMessage->SendFrom = "Test Fax";
+    	$faxMessage->Documents = array($document);
+    	$faxMessage->Resolution = "normal";
+    	$faxMessage->Retries = 0;
+    	$faxMessage->BusyRetries = 2;
+
+    	$sendFaxRequest = new MonopondSendFaxRequest();
+    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+    	$sendFaxRequest->SendRef = "Send-Ref-1";
+    	$sendFaxRequest->FaxMessages[] = $faxMessage;
+
+    	$sendRespone = $client->sendFax($sendFaxRequest);
+    	// print_r($sendRespone);
+	}
+
+	public function testSendFax_StampMergeField_TexValue(){
+    	//needs actual connection
+    	//replace with valid password and password
+    	$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+    	$filedata = fread(fopen("./tests/sample.tiff", "r"), filesize("./tests/sample.tiff"));
+    	$filedata = base64_encode($filedata);
+
+		//TODO: setup stampMergeField1
+		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey1->XCoord="400";
+		$stampMergeFieldKey1->YCoord="400";
+		
+		$stampMergeFieldTextValue1 = new MonopondStampMergeFieldTextValue();
+		$stampMergeFieldTextValue1->FontName = "Times-Roman";
+		$stampMergeFieldTextValue1->FontSize= "50";
+		$stampMergeFieldTextValue1->TextValue= "Test1";
+
+		$mergeField1 = new MonopondStampMergeField();
+		$mergeField1->Key=$stampMergeFieldKey1;
+		$mergeField1->TextValue=$stampMergeFieldTextValue1;
+
+		//TODO: setup stampMergeField2
+		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey2->XCoord="500";
+		$stampMergeFieldKey2->YCoord="500";
+		
+		$stampMergeFieldTextValue2 = new MonopondStampMergeFieldTextValue();
+		$stampMergeFieldTextValue2->FontName = "Times-Roman";
+		$stampMergeFieldTextValue2->FontSize= "50";
+		$stampMergeFieldTextValue2->TextValue= "Test2";
+
+		$mergeField2 = new MonopondStampMergeField();
+		$mergeField2->Key=$stampMergeFieldKey2;
+		$mergeField2->TextValue=$stampMergeFieldTextValue2;
+		
+		//TODO: transform mergeFields into an array 
+		$stampMergeData = new MonopondStampMergeData();
+		$stampMergeData->MergeField = array($mergeField1,$mergeField2);
+
+    	$document = new MonopondDocument();
+    	$document->FileName = "sample.tiff";
+    	$document->FileData = $filedata;
+    	$document->Order = 0;
+		$document->StampMergeData = $stampMergeData;
+
+    	$faxMessage = new MonopondFaxMessage();
+    	$faxMessage->MessageRef = "Testing-message-1";
+    	$faxMessage->SendTo = "61011111111";
+    	$faxMessage->SendFrom = "Test Fax";
+    	$faxMessage->Documents = array($document);
+    	$faxMessage->Resolution = "normal";
+    	$faxMessage->Retries = 0;
+    	$faxMessage->BusyRetries = 2;
+
+    	$sendFaxRequest = new MonopondSendFaxRequest();
+    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+    	$sendFaxRequest->SendRef = "Send-Ref-1";
+    	$sendFaxRequest->FaxMessages[] = $faxMessage;
+
+    	$sendRespone = $client->sendFax($sendFaxRequest);
+    	// print_r($sendRespone);
+    }
+
+	public function testSendFax_StampMergeField_ImageValue(){
+    	//needs actual connection
+    	//replace with valid password and password
+    	$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+    	$filedata = fread(fopen("./tests/sample.tiff", "r"), filesize("./tests/sample.tiff"));
+    	$filedata = base64_encode($filedata);
+
+		//TODO: setup stampMergeField1
+		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey1->XCoord="500";
+		$stampMergeFieldKey1->YCoord="200";
+		
+		$stampMergeFieldImageValue1 = new MonopondStampMergeFieldImageValue();
+		$stampMergeFieldImageValue1->FileName="stamp.png";
+		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
+		$stampMergeFieldImageValue1->FileData= $filedata = base64_encode($file);
+		$stampMergeFieldImageValue1->width="388";
+		$stampMergeFieldImageValue1->height="159";
+
+		$mergeField1 = new MonopondStampMergeField();
+		$mergeField1->Key=$stampMergeFieldKey1;
+		$mergeField1->ImageValue=$stampMergeFieldImageValue1;
+	
+		//TODO: setup stampMergeField2
+		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey2->XCoord="0";
+		$stampMergeFieldKey2->YCoord="0";
+		
+		$stampMergeFieldImageValue2 = new MonopondStampMergeFieldImageValue();
+		$stampMergeFieldImageValue2->FileName="stamp.png";
+		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
+		$stampMergeFieldImageValue2->FileData= $filedata = base64_encode($file);
+		$stampMergeFieldImageValue2->width="388";
+		$stampMergeFieldImageValue2->height="159";
+
+		$mergeField2 = new MonopondStampMergeField();
+		$mergeField2->Key=$stampMergeFieldKey2;
+		$mergeField2->ImageValue=$stampMergeFieldImageValue2;
+		
+		//TODO: transform mergeFields into an array 
+		$stampMergeData = new MonopondStampMergeData();
+		$stampMergeData->MergeField = array($mergeField1,$mergeField2);
+
+    	$document = new MonopondDocument();
+    	$document->FileName = "sample.txt";
+    	$document->FileData = $filedata;
+    	$document->Order = 0;
+
+    	$faxMessage = new MonopondFaxMessage();
+    	$faxMessage->MessageRef = "Testing-message-1";
+    	$faxMessage->SendTo = "61011111111";
+    	$faxMessage->SendFrom = "Test Fax";
+    	$faxMessage->Documents = array($document);
+    	$faxMessage->Resolution = "normal";
+    	$faxMessage->Retries = 0;
+    	$faxMessage->BusyRetries = 2;
+
+    	$sendFaxRequest = new MonopondSendFaxRequest();
+    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+    	$sendFaxRequest->SendRef = "Send-Ref-1";
+    	$sendFaxRequest->FaxMessages[] = $faxMessage;
+
+    	$sendRespone = $client->sendFax($sendFaxRequest);
+    	// print_r($sendRespone);
+    }
+
+	public function testSendFax_StampMergeField_TextAndImageValue(){
+    	//needs actual connection
+    	//replace with valid password and password
+    	$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Local);
+    	$filedata = fread(fopen("./tests/sample.tiff", "r"), filesize("./tests/sample.tiff"));
+    	$filedata = base64_encode($filedata);
+
+		//TODO: setup stampMergeField1
+		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey1->XCoord="283";
+		$stampMergeFieldKey1->YCoord="120";
+		
+		$stampMergeFieldImageValue1 = new MonopondStampMergeFieldImageValue();
+		$stampMergeFieldImageValue1->FileName="stamp.png";
+		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
+		$stampMergeFieldImageValue1->FileData= $filedata = base64_encode($file);
+		$stampMergeFieldImageValue1->width="388";
+		$stampMergeFieldImageValue1->height="159";
+
+		$mergeField1 = new MonopondStampMergeField();
+		$mergeField1->Key=$stampMergeFieldKey1;
+		$mergeField1->ImageValue=$stampMergeFieldImageValue1;
+	
+		//TODO: setup stampMergeField2
+		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey2->XCoord="1287";
+		$stampMergeFieldKey2->YCoord="421";
+		
+		$stampMergeFieldTextValue2 = new MonopondStampMergeFieldTextValue();
+		$stampMergeFieldTextValue2->FontName = "Times-Roman";
+		$stampMergeFieldTextValue2->FontSize= "50";
+		$stampMergeFieldTextValue2->TextValue= "Hello";
+
+		$mergeField2 = new MonopondStampMergeField();
+		$mergeField2->Key=$stampMergeFieldKey2;
+		$mergeField2->TextValue=$stampMergeFieldTextValue2;
+		
+		//TODO: transform mergeFields into an array 
+		$stampMergeData = new MonopondStampMergeData();
+		$stampMergeData->MergeField = array($mergeField1,$mergeField2);
+
+    	$document = new MonopondDocument();
+    	$document->FileName = "sample.txt";
+    	$document->FileData = $filedata;
+    	$document->Order = 0;
+
+    	$faxMessage = new MonopondFaxMessage();
+    	$faxMessage->MessageRef = "Testing-message-1";
+    	$faxMessage->SendTo = "61011111111";
+    	$faxMessage->SendFrom = "Test Fax";
+    	$faxMessage->Documents = array($document);
+    	$faxMessage->Resolution = "normal";
+    	$faxMessage->Retries = 0;
+    	$faxMessage->BusyRetries = 2;
+
+    	$sendFaxRequest = new MonopondSendFaxRequest();
+    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+    	$sendFaxRequest->SendRef = "Send-Ref-1";
+    	$sendFaxRequest->FaxMessages[] = $faxMessage;
+
+    	$sendRespone = $client->sendFax($sendFaxRequest);
+    	print_r($sendRespone);
+    }
+
+
+    public function testSaveFaxDocument() {
+		//needs actual connection
+		//replace with valid password and password
+		$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+		
+		$filedata = fread(fopen("./tests/sample.tiff", "r"), filesize("./tests/sample.tiff"));
+	    $filedata = base64_encode($filedata);
+
+		// TODO: Setup SaveFaxDocumentRequest 
+		$saveFaxDocumentRequest = new MonopondSaveFaxDocumentRequest();
+		$saveFaxDocumentRequest->DocumentRef = "test-php-tiffx";
+		$saveFaxDocumentRequest->FileName = "sample.tiff";
+		$saveFaxDocumentRequest->FileData = $filedata;
+		
+		// Call save fax method
+		$saveFaxDocumentResponse = $client->saveFaxDocument($saveFaxDocumentRequest);
+		//print_r($saveFaxDocumentResponse);
+	}
+
+	public function testDeleteFaxDocument() {
+		//needs actual connection
+		//replace with valid password and password
+		$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+		
+		// TODO: Setup DeleteFaxDocumentRequest 
+		$deleteFaxDocumentRequest = new MonopondDeleteFaxDocumentRequest();
+		$deleteFaxDocumentRequest->DocumentRef = "testxx121x";
+		
+		// Call delete fax method
+		$deleteFaxDocumentResponse = $client->deleteFaxDocument($deleteFaxDocumentRequest);
+		//print_r($deleteFaxDocumentResponse);
+	}
+
+	public function testPreviewFaxDocument_Basic() {
+		//needs actual connection
+		//replace with valid password and password
+		$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+		
+		// TODO: Setup PreviewFaxDocument
+		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
+		$previewFaxDocumentRequest->DocumentRef = "test-php-docx";		
+		$previewFaxDocumentRequest->Resolution = "normal";
+		$previewFaxDocumentRequest->DitheringTechnique = "none";
+
+		// Call PreviewFaxDocument method
+		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
+		//print_r($previewFaxDocumentResponse);
+	}
+
+	public function testPreviewFaxDocument_DocMergeField() {
+		//needs actual connection
+		//replace with valid password and password
+		$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+		
+		$mergeField1 = new MonopondDocMergeField();
+		$mergeField1->Key="field1";
+		$mergeField1->Value="Test";
+
+		$mergeField2 = new MonopondDocMergeField();
+		$mergeField2->Key="field2";
+		$mergeField2->Value="Test2";
+		
+		//TODO: transform mergeFields into an array 
+		$docMergeData = new MonopondDocMergeData();
+		$docMergeData->MergeField = array($mergeField1, $mergeField2);
+
+		// TODO: Setup PreviewFaxDocument
+		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
+		$previewFaxDocumentRequest->DocumentRef = "test-php-docx";		
+		$previewFaxDocumentRequest->Resolution = "normal";
+		$previewFaxDocumentRequest->DitheringTechnique = "none";
+		$previewFaxDocumentRequest->DocMergeData = $docMergeData;
+
+		// Call PreviewFaxDocument method
+		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
+		print_r($previewFaxDocumentResponse);
+	}
+	
+	public function testPreviewFaxDocument_StampMergeFieldTextValue() {
+		//needs actual connection
+		//replace with valid password and password
+		$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+		
+		//TODO: setup stampMergeField1
+		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey1->XCoord="400";
+		$stampMergeFieldKey1->YCoord="400";
+		
+		$stampMergeFieldTextValue1 = new MonopondStampMergeFieldTextValue();
+		$stampMergeFieldTextValue1->FontName = "Times-Roman";
+		$stampMergeFieldTextValue1->FontSize= "50";
+		$stampMergeFieldTextValue1->TextValue= "Test1";
+
+		$mergeField1 = new MonopondStampMergeField();
+		$mergeField1->Key=$stampMergeFieldKey1;
+		$mergeField1->TextValue=$stampMergeFieldTextValue1;
+		
+		//TODO: setup stampMergeField2
+		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey2->XCoord="500";
+		$stampMergeFieldKey2->YCoord="500";
+		
+		$stampMergeFieldTextValue2 = new MonopondStampMergeFieldTextValue();
+		$stampMergeFieldTextValue2->FontName = "Times-Roman";
+		$stampMergeFieldTextValue2->FontSize= "50";
+		$stampMergeFieldTextValue2->TextValue= "Test2";
+
+		$mergeField2 = new MonopondStampMergeField();
+		$mergeField2->Key=$stampMergeFieldKey2;
+		$mergeField2->TextValue=$stampMergeFieldTextValue2;
+		
+		//TODO: transform mergeFields into an array 
+		$stampMergeData = new MonopondStampMergeData();
+		$stampMergeData->MergeField = array($mergeField1, $mergeField2);
+
+		// TODO: Setup PreviewFaxDocument
+		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
+		$previewFaxDocumentRequest->DocumentRef = "test-php-tiffx";		
+		$previewFaxDocumentRequest->Resolution = "normal";
+		$previewFaxDocumentRequest->DitheringTechnique = "none";
+		$previewFaxDocumentRequest->StampMergeData = $stampMergeData;
+
+		// Call PreviewFaxDocument method
+		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
+		//print_r($previewFaxDocumentResponse);
+	}
+
+	public function testPreviewFaxDocument_StampMergeFieldImageValue() {
+		//needs actual connection
+		//replace with valid password and password
+		$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+		
+		//TODO: setup stampMergeField1
+		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey1->XCoord="500";
+		$stampMergeFieldKey1->YCoord="200";
+		
+		$stampMergeFieldImageValue1 = new MonopondStampMergeFieldImageValue();
+		$stampMergeFieldImageValue1->FileName="stamp.png";
+		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
+		$stampMergeFieldImageValue1->FileData= $filedata = base64_encode($file);
+		$stampMergeFieldImageValue1->width="388";
+		$stampMergeFieldImageValue1->height="159";
+
+		$mergeField1 = new MonopondStampMergeField();
+		$mergeField1->Key=$stampMergeFieldKey1;
+		$mergeField1->ImageValue=$stampMergeFieldImageValue1;
+	
+		//TODO: setup stampMergeField2
+		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey2->XCoord="0";
+		$stampMergeFieldKey2->YCoord="0";
+		
+		$stampMergeFieldImageValue2 = new MonopondStampMergeFieldImageValue();
+		$stampMergeFieldImageValue2->FileName="stamp.png";
+		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
+		$stampMergeFieldImageValue2->FileData= $filedata = base64_encode($file);
+		$stampMergeFieldImageValue2->width="388";
+		$stampMergeFieldImageValue2->height="159";
+
+		$mergeField2 = new MonopondStampMergeField();
+		$mergeField2->Key=$stampMergeFieldKey2;
+		$mergeField2->ImageValue=$stampMergeFieldImageValue2;
+		
+		//TODO: transform mergeFields into an array 
+		$stampMergeData = new MonopondStampMergeData();
+		$stampMergeData->MergeField = array($mergeField1,$mergeField2);
+
+		// TODO: Setup PreviewFaxDocument
+		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
+		$previewFaxDocumentRequest->DocumentRef = "test-php-tiffx";		
+		$previewFaxDocumentRequest->Resolution = "normal";
+		$previewFaxDocumentRequest->DitheringTechnique = "none";
+		$previewFaxDocumentRequest->StampMergeData = $stampMergeData;
+
+		// Call PreviewFaxDocument method
+		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
+		print_r($previewFaxDocumentResponse);
+	}
+
+	public function testPreviewFaxDocument_StampMergeField_TextAndImage() {
+		//needs actual connection
+		//replace with valid password and password
+		$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+		
+		//TODO: setup stampMergeField1
+		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey1->XCoord="500";
+		$stampMergeFieldKey1->YCoord="200";
+		
+		$stampMergeFieldImageValue1 = new MonopondStampMergeFieldImageValue();
+		$stampMergeFieldImageValue1->FileName="stamp.png";
+		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
+		$stampMergeFieldImageValue1->FileData= $filedata = base64_encode($file);
+		$stampMergeFieldImageValue1->width="388";
+		$stampMergeFieldImageValue1->height="159";
+
+		$mergeField1 = new MonopondStampMergeField();
+		$mergeField1->Key=$stampMergeFieldKey1;
+		$mergeField1->ImageValue=$stampMergeFieldImageValue1;
+	
+		//TODO: setup stampMergeField2
+		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
+		$stampMergeFieldKey2->XCoord="500";
+		$stampMergeFieldKey2->YCoord="500";
+		
+		$stampMergeFieldTextValue2 = new MonopondStampMergeFieldTextValue();
+		$stampMergeFieldTextValue2->FontName = "Times-Roman";
+		$stampMergeFieldTextValue2->FontSize= "50";
+		$stampMergeFieldTextValue2->TextValue= "Test2";
+
+		$mergeField2 = new MonopondStampMergeField();
+		$mergeField2->Key=$stampMergeFieldKey2;
+		$mergeField2->TextValue=$stampMergeFieldTextValue2;
+		
+		//TODO: transform mergeFields into an array 
+		$stampMergeData = new MonopondStampMergeData();
+		$stampMergeData->MergeField = array($mergeField1,$mergeField2);
+
+		// TODO: Setup PreviewFaxDocument
+		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
+		$previewFaxDocumentRequest->DocumentRef = "test-php-tiffx";		
+		$previewFaxDocumentRequest->Resolution = "normal";
+		$previewFaxDocumentRequest->DitheringTechnique = "none";
+		$previewFaxDocumentRequest->StampMergeData = $stampMergeData;
+
+		// Call PreviewFaxDocument method
+		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
+		print_r($previewFaxDocumentResponse);
+	}
 
     public function testFaxStatusWithBriefVerbosity(){
     	$client = $this->getMockFromWsdl('faxapi-v2.wsdl', 'faxStatus');
@@ -403,532 +990,6 @@ class MonopondSOAPClientV2Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("test-2-1-1", $resumeFax->FaxMessages[$i]->messageRef);
     	}
     }
-
-    public function testSendFaxSendSingleFax(){
-    	//needs actual connection
-    	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-    	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
-    	$filedata = base64_encode($filedata);
-
-    	$document = new MonopondDocument();
-    	$document->FileName = "sample.txt";
-    	$document->FileData = $filedata;
-    	$document->Order = 0;
-
-    	$faxMessage = new MonopondFaxMessage();
-    	$faxMessage->MessageRef = "Testing-message-1";
-    	$faxMessage->SendTo = "61011111111";
-    	$faxMessage->SendFrom = "Test Fax";
-    	$faxMessage->Documents = array($document);
-    	$faxMessage->Resolution = "normal";
-    	$faxMessage->Retries = 0;
-    	$faxMessage->BusyRetries = 2;
-
-    	$sendFaxRequest = new MonopondSendFaxRequest();
-    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
-    	$sendFaxRequest->SendRef = "Send-Ref-1";
-    	$sendFaxRequest->FaxMessages[] = $faxMessage;
-
-    	$sendRespone = $client->sendFax($sendFaxRequest);
-    	// print_r($sendRespone);
-    }
-
-    public function testSendFaxMultipleFaxes(){
-		//needs actual connection
-    	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-    	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
-    	$filedata = base64_encode($filedata);
-
-    	$document = new MonopondDocument();
-    	$document->FileName = "sample.txt";
-    	$document->FileData = $filedata;
-    	$document->Order = 0;
-
-    	$document2 = new MonopondDocument();
-    	$document2->FileName = "sample.txt";
-    	$document2->FileData = $filedata;
-    	$document2->Order = 0;
-    
-    	$document3 = new MonopondDocument();
-    	$document3->FileName = "sample.txt";
-    	$document3->FileData = $filedata;
-    	$document3->Order = 0;
-
-    	$faxMessage = new MonopondFaxMessage();
-    	$faxMessage->MessageRef = "Testing-message-1";
-    	$faxMessage->SendTo = "61011111111";
-    	$faxMessage->SendFrom = "Test Fax";
-    	$faxMessage->Documents = array($document);
-    	$faxMessage->Resolution = "normal";
-    	$faxMessage->Retries = 0;
-    	$faxMessage->BusyRetries = 2;
-
-    	$faxMessage2 = new MonopondFaxMessage();
-    	$faxMessage2->MessageRef = "Testing-message-2";
-    	$faxMessage2->SendTo = "61011111111";
-    	$faxMessage2->SendFrom = "Test Fax 2";
-    	$faxMessage2->Documents = array($document2, $document3);
-    	$faxMessage2->Resolution = "normal";
-    	$faxMessage2->Retries = 0;
-    	$faxMessage2->BusyRetries = 3;
-
-    	$sendFaxRequest = new MonopondSendFaxRequest();
-    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
-    	$sendFaxRequest->SendRef = "Send-Ref-1";
-    	$sendFaxRequest->FaxMessages[] = $faxMessage;
-    	$sendFaxRequest->FaxMessages[] = $faxMessage2;
-
-    	$sendRespone = $client->sendFax($sendFaxRequest);
-    	// print_r($sendRespone);
-
-    }
-
-    public function testSendFaxSendBroadcast(){
-    	//needs actual connection
-    	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-    	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
-    	$filedata = base64_encode($filedata);
-	
-		// TODO: Setup Document
-    	$document = new MonopondDocument();
-    	$document->FileName = "AnyFileName1.txt";
-    	$document->FileData = $filedata;
-    	$document->Order = 0;
- 
-    	// TODO: Setup FaxMessage
-    	$faxMessage = new MonopondFaxMessage();
-    	$faxMessage->MessageRef = "Testing-message-1";
-    	$faxMessage->SendTo = "61011111111";
-
-    	$faxMessage2 = new MonopondFaxMessage();
-    	$faxMessage2->MessageRef = "Testing-message-2";
-    	$faxMessage2->SendTo = "61011111111";
-
-    	// TODO: Setup FaxSendRequest 
-    	$sendFaxRequest = new MonopondSendFaxRequest();
-    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
-    	$sendFaxRequest->SendRef = "Send-Ref-1";
-    	$sendFaxRequest->FaxMessages[] = $faxMessage;
-    	$sendFaxRequest->FaxMessages[] = $faxMessage2;
-    	$sendFaxRequest->Documents = array($document);
-    	$sendFaxRequest->SendFrom = "Test Fax";
-
-    	// Call send fax method
-    	$sendRespone = $client->sendFax($sendFaxRequest);
-    	// print_r($sendRespone);
-    }
-
-	public function testSendFax_DocMergeField(){
-		//needs actual connection
-    	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-    	$filedata = fread(fopen("./tests/test.docx", "r"), filesize("./tests/test.docx"));
-    	$filedata = base64_encode($filedata);
-
-		//TODO: Setup DocMergeFields
-		$mergeField1 = new MonopondDocMergeField();
-		$mergeField1->Key="field1";
-		$mergeField1->Value="Test";
-
-		$mergeField2 = new MonopondDocMergeField();
-		$mergeField2->Key="field2";
-		$mergeField2->Value="Test2";
-
-		//TODO: transform mergeFields into an array 
-		$docMergeData = new MonopondDocMergeData();
-		$docMergeData->MergeField = array($mergeField1, $mergeField2);
-		
-		//TODO: Setup Document
-    	$document = new MonopondDocument();
-    	$document->FileName = "sample.docx";
-    	$document->FileData = $filedata;
-    	$document->Order = 0;
-		$document->DocMergeData = $docMergeData;
-
-    	$faxMessage = new MonopondFaxMessage();
-    	$faxMessage->MessageRef = "Testing-message-1";
-    	$faxMessage->SendTo = "61011111111";
-    	$faxMessage->SendFrom = "Test Fax";
-    	$faxMessage->Documents = array($document);
-    	$faxMessage->Resolution = "normal";
-    	$faxMessage->Retries = 0;
-    	$faxMessage->BusyRetries = 2;
-
-    	$sendFaxRequest = new MonopondSendFaxRequest();
-    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
-    	$sendFaxRequest->SendRef = "Send-Ref-1";
-    	$sendFaxRequest->FaxMessages[] = $faxMessage;
-
-    	$sendRespone = $client->sendFax($sendFaxRequest);
-    	// print_r($sendRespone);
-	}
-
-	public function testSendFax_StampMergeField_TexValue(){
-    	//needs actual connection
-    	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-    	$filedata = fread(fopen("./tests/sample.tiff", "r"), filesize("./tests/sample.tiff"));
-    	$filedata = base64_encode($filedata);
-
-		//TODO: setup stampMergeField1
-		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey1->XCoord="400";
-		$stampMergeFieldKey1->YCoord="400";
-		
-		$stampMergeFieldTextValue1 = new MonopondStampMergeFieldTextValue();
-		$stampMergeFieldTextValue1->FontName = "Times-Roman";
-		$stampMergeFieldTextValue1->FontSize= "50";
-		$stampMergeFieldTextValue1->TextValue= "Test1";
-
-		$mergeField1 = new MonopondStampMergeField();
-		$mergeField1->Key=$stampMergeFieldKey1;
-		$mergeField1->TextValue=$stampMergeFieldTextValue1;
-
-		//TODO: setup stampMergeField2
-		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey2->XCoord="500";
-		$stampMergeFieldKey2->YCoord="500";
-		
-		$stampMergeFieldTextValue2 = new MonopondStampMergeFieldTextValue();
-		$stampMergeFieldTextValue2->FontName = "Times-Roman";
-		$stampMergeFieldTextValue2->FontSize= "50";
-		$stampMergeFieldTextValue2->TextValue= "Test2";
-
-		$mergeField2 = new MonopondStampMergeField();
-		$mergeField2->Key=$stampMergeFieldKey2;
-		$mergeField2->TextValue=$stampMergeFieldTextValue2;
-		
-		//TODO: transform mergeFields into an array 
-		$stampMergeData = new MonopondStampMergeData();
-		$stampMergeData->MergeField = array($mergeField1,$mergeField2);
-
-    	$document = new MonopondDocument();
-    	$document->FileName = "sample.tiff";
-    	$document->FileData = $filedata;
-    	$document->Order = 0;
-		$document->StampMergeData = $stampMergeData;
-
-    	$faxMessage = new MonopondFaxMessage();
-    	$faxMessage->MessageRef = "Testing-message-1";
-    	$faxMessage->SendTo = "61011111111";
-    	$faxMessage->SendFrom = "Test Fax";
-    	$faxMessage->Documents = array($document);
-    	$faxMessage->Resolution = "normal";
-    	$faxMessage->Retries = 0;
-    	$faxMessage->BusyRetries = 2;
-
-    	$sendFaxRequest = new MonopondSendFaxRequest();
-    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
-    	$sendFaxRequest->SendRef = "Send-Ref-1";
-    	$sendFaxRequest->FaxMessages[] = $faxMessage;
-
-    	$sendRespone = $client->sendFax($sendFaxRequest);
-    	// print_r($sendRespone);
-    }
-
-	public function testSendFax_StampMergeField_ImageValue(){
-    	//needs actual connection
-    	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-    	$filedata = fread(fopen("./tests/sample.tiff", "r"), filesize("./tests/sample.tiff"));
-    	$filedata = base64_encode($filedata);
-
-		//TODO: setup stampMergeField1
-		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey1->XCoord="500";
-		$stampMergeFieldKey1->YCoord="200";
-		
-		$stampMergeFieldImageValue1 = new MonopondStampMergeFieldImageValue();
-		$stampMergeFieldImageValue1->FileName="stamp.png";
-		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
-		$stampMergeFieldImageValue1->FileData= $filedata = base64_encode($file);
-		$stampMergeFieldImageValue1->width="388";
-		$stampMergeFieldImageValue1->height="159";
-
-		$mergeField1 = new MonopondStampMergeField();
-		$mergeField1->Key=$stampMergeFieldKey1;
-		$mergeField1->ImageValue=$stampMergeFieldImageValue1;
-	
-		//TODO: setup stampMergeField2
-		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey2->XCoord="0";
-		$stampMergeFieldKey2->YCoord="0";
-		
-		$stampMergeFieldImageValue2 = new MonopondStampMergeFieldImageValue();
-		$stampMergeFieldImageValue2->FileName="stamp.png";
-		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
-		$stampMergeFieldImageValue2->FileData= $filedata = base64_encode($file);
-		$stampMergeFieldImageValue2->width="388";
-		$stampMergeFieldImageValue2->height="159";
-
-		$mergeField2 = new MonopondStampMergeField();
-		$mergeField2->Key=$stampMergeFieldKey2;
-		$mergeField2->ImageValue=$stampMergeFieldImageValue2;
-		
-		//TODO: transform mergeFields into an array 
-		$stampMergeData = new MonopondStampMergeData();
-		$stampMergeData->MergeField = array($mergeField1,$mergeField2);
-
-    	$document = new MonopondDocument();
-    	$document->FileName = "sample.txt";
-    	$document->FileData = $filedata;
-    	$document->Order = 0;
-
-    	$faxMessage = new MonopondFaxMessage();
-    	$faxMessage->MessageRef = "Testing-message-1";
-    	$faxMessage->SendTo = "61011111111";
-    	$faxMessage->SendFrom = "Test Fax";
-    	$faxMessage->Documents = array($document);
-    	$faxMessage->Resolution = "normal";
-    	$faxMessage->Retries = 0;
-    	$faxMessage->BusyRetries = 2;
-
-    	$sendFaxRequest = new MonopondSendFaxRequest();
-    	$sendFaxRequest->BroadcastRef = "Broadcast-test-1";
-    	$sendFaxRequest->SendRef = "Send-Ref-1";
-    	$sendFaxRequest->FaxMessages[] = $faxMessage;
-
-    	$sendRespone = $client->sendFax($sendFaxRequest);
-    	// print_r($sendRespone);
-    }
-
-
-    public function testSaveFaxDocument() {
-		//needs actual connection
-		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-		
-		$filedata = fread(fopen("./tests/sample.tiff", "r"), filesize("./tests/sample.tiff"));
-	    $filedata = base64_encode($filedata);
-
-		// TODO: Setup SaveFaxDocumentRequest 
-		$saveFaxDocumentRequest = new MonopondSaveFaxDocumentRequest();
-		$saveFaxDocumentRequest->DocumentRef = "test-php-tiffx";
-		$saveFaxDocumentRequest->FileName = "sample.tiff";
-		$saveFaxDocumentRequest->FileData = $filedata;
-		
-		// Call save fax method
-		$saveFaxDocumentResponse = $client->saveFaxDocument($saveFaxDocumentRequest);
-		//print_r($saveFaxDocumentResponse);
-	}
-
-	public function testDeleteFaxDocument() {
-		//needs actual connection
-		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-		
-		// TODO: Setup DeleteFaxDocumentRequest 
-		$deleteFaxDocumentRequest = new MonopondDeleteFaxDocumentRequest();
-		$deleteFaxDocumentRequest->DocumentRef = "testxx121x";
-		
-		// Call delete fax method
-		$deleteFaxDocumentResponse = $client->deleteFaxDocument($deleteFaxDocumentRequest);
-		//print_r($deleteFaxDocumentResponse);
-	}
-
-	public function testPreviewFaxDocument_Basic() {
-		//needs actual connection
-		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-		
-		// TODO: Setup PreviewFaxDocument
-		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
-		$previewFaxDocumentRequest->DocumentRef = "test-php-docx";		
-		$previewFaxDocumentRequest->Resolution = "normal";
-		$previewFaxDocumentRequest->DitheringTechnique = "none";
-
-		// Call PreviewFaxDocument method
-		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
-		//print_r($previewFaxDocumentResponse);
-	}
-
-	public function testPreviewFaxDocument_DocMergeField() {
-		//needs actual connection
-		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-		
-		$mergeField1 = new MonopondDocMergeField();
-		$mergeField1->Key="field1";
-		$mergeField1->Value="Test";
-
-		$mergeField2 = new MonopondDocMergeField();
-		$mergeField2->Key="field2";
-		$mergeField2->Value="Test2";
-		
-		//TODO: transform mergeFields into an array 
-		$docMergeData = new MonopondDocMergeData();
-		$docMergeData->MergeField = array($mergeField1, $mergeField2);
-
-		// TODO: Setup PreviewFaxDocument
-		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
-		$previewFaxDocumentRequest->DocumentRef = "test-php-docx";		
-		$previewFaxDocumentRequest->Resolution = "normal";
-		$previewFaxDocumentRequest->DitheringTechnique = "none";
-		$previewFaxDocumentRequest->DocMergeData = $docMergeData;
-
-		// Call PreviewFaxDocument method
-		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
-		print_r($previewFaxDocumentResponse);
-	}
-	
-	public function testPreviewFaxDocument_StampMergeFieldTextValue() {
-		//needs actual connection
-		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-		
-		//TODO: setup stampMergeField1
-		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey1->XCoord="400";
-		$stampMergeFieldKey1->YCoord="400";
-		
-		$stampMergeFieldTextValue1 = new MonopondStampMergeFieldTextValue();
-		$stampMergeFieldTextValue1->FontName = "Times-Roman";
-		$stampMergeFieldTextValue1->FontSize= "50";
-		$stampMergeFieldTextValue1->TextValue= "Test1";
-
-		$mergeField1 = new MonopondStampMergeField();
-		$mergeField1->Key=$stampMergeFieldKey1;
-		$mergeField1->TextValue=$stampMergeFieldTextValue1;
-		
-		//TODO: setup stampMergeField2
-		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey2->XCoord="500";
-		$stampMergeFieldKey2->YCoord="500";
-		
-		$stampMergeFieldTextValue2 = new MonopondStampMergeFieldTextValue();
-		$stampMergeFieldTextValue2->FontName = "Times-Roman";
-		$stampMergeFieldTextValue2->FontSize= "50";
-		$stampMergeFieldTextValue2->TextValue= "Test2";
-
-		$mergeField2 = new MonopondStampMergeField();
-		$mergeField2->Key=$stampMergeFieldKey2;
-		$mergeField2->TextValue=$stampMergeFieldTextValue2;
-		
-		//TODO: transform mergeFields into an array 
-		$stampMergeData = new MonopondStampMergeData();
-		$stampMergeData->MergeField = array($mergeField1, $mergeField2);
-
-		// TODO: Setup PreviewFaxDocument
-		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
-		$previewFaxDocumentRequest->DocumentRef = "test-php-tiffx";		
-		$previewFaxDocumentRequest->Resolution = "normal";
-		$previewFaxDocumentRequest->DitheringTechnique = "none";
-		$previewFaxDocumentRequest->StampMergeData = $stampMergeData;
-
-		// Call PreviewFaxDocument method
-		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
-		//print_r($previewFaxDocumentResponse);
-	}
-
-	public function testPreviewFaxDocument_StampMergeFieldImageValue() {
-		//needs actual connection
-		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-		
-		//TODO: setup stampMergeField1
-		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey1->XCoord="500";
-		$stampMergeFieldKey1->YCoord="200";
-		
-		$stampMergeFieldImageValue1 = new MonopondStampMergeFieldImageValue();
-		$stampMergeFieldImageValue1->FileName="stamp.png";
-		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
-		$stampMergeFieldImageValue1->FileData= $filedata = base64_encode($file);
-		$stampMergeFieldImageValue1->width="388";
-		$stampMergeFieldImageValue1->height="159";
-
-		$mergeField1 = new MonopondStampMergeField();
-		$mergeField1->Key=$stampMergeFieldKey1;
-		$mergeField1->ImageValue=$stampMergeFieldImageValue1;
-	
-		//TODO: setup stampMergeField2
-		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey2->XCoord="0";
-		$stampMergeFieldKey2->YCoord="0";
-		
-		$stampMergeFieldImageValue2 = new MonopondStampMergeFieldImageValue();
-		$stampMergeFieldImageValue2->FileName="stamp.png";
-		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
-		$stampMergeFieldImageValue2->FileData= $filedata = base64_encode($file);
-		$stampMergeFieldImageValue2->width="388";
-		$stampMergeFieldImageValue2->height="159";
-
-		$mergeField2 = new MonopondStampMergeField();
-		$mergeField2->Key=$stampMergeFieldKey2;
-		$mergeField2->ImageValue=$stampMergeFieldImageValue2;
-		
-		//TODO: transform mergeFields into an array 
-		$stampMergeData = new MonopondStampMergeData();
-		$stampMergeData->MergeField = array($mergeField1,$mergeField2);
-
-		// TODO: Setup PreviewFaxDocument
-		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
-		$previewFaxDocumentRequest->DocumentRef = "test-php-tiffx";		
-		$previewFaxDocumentRequest->Resolution = "normal";
-		$previewFaxDocumentRequest->DitheringTechnique = "none";
-		$previewFaxDocumentRequest->StampMergeData = $stampMergeData;
-
-		// Call PreviewFaxDocument method
-		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
-		print_r($previewFaxDocumentResponse);
-	}
-
-	public function testPreviewFaxDocument_StampMergeField_TextAndImage() {
-		//needs actual connection
-		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("timtest", "gnome4life", MPENV::Local);
-		
-		//TODO: setup stampMergeField1
-		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey1->XCoord="500";
-		$stampMergeFieldKey1->YCoord="200";
-		
-		$stampMergeFieldImageValue1 = new MonopondStampMergeFieldImageValue();
-		$stampMergeFieldImageValue1->FileName="stamp.png";
-		$file= fread(fopen("./tests/stamp.png", "r"), filesize("./tests/stamp.png"));
-		$stampMergeFieldImageValue1->FileData= $filedata = base64_encode($file);
-		$stampMergeFieldImageValue1->width="388";
-		$stampMergeFieldImageValue1->height="159";
-
-		$mergeField1 = new MonopondStampMergeField();
-		$mergeField1->Key=$stampMergeFieldKey1;
-		$mergeField1->ImageValue=$stampMergeFieldImageValue1;
-	
-		//TODO: setup stampMergeField2
-		$stampMergeFieldKey2 = new MonopondStampMergeFieldKey();
-		$stampMergeFieldKey2->XCoord="500";
-		$stampMergeFieldKey2->YCoord="500";
-		
-		$stampMergeFieldTextValue2 = new MonopondStampMergeFieldTextValue();
-		$stampMergeFieldTextValue2->FontName = "Times-Roman";
-		$stampMergeFieldTextValue2->FontSize= "50";
-		$stampMergeFieldTextValue2->TextValue= "Test2";
-
-		$mergeField2 = new MonopondStampMergeField();
-		$mergeField2->Key=$stampMergeFieldKey2;
-		$mergeField2->TextValue=$stampMergeFieldTextValue2;
-		
-		//TODO: transform mergeFields into an array 
-		$stampMergeData = new MonopondStampMergeData();
-		$stampMergeData->MergeField = array($mergeField1,$mergeField2);
-
-		// TODO: Setup PreviewFaxDocument
-		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
-		$previewFaxDocumentRequest->DocumentRef = "test-php-tiffx";		
-		$previewFaxDocumentRequest->Resolution = "normal";
-		$previewFaxDocumentRequest->DitheringTechnique = "none";
-		$previewFaxDocumentRequest->StampMergeData = $stampMergeData;
-
-		// Call PreviewFaxDocument method
-		$previewFaxDocumentResponse = $client->previewFaxDocument($previewFaxDocumentRequest);
-		print_r($previewFaxDocumentResponse);
-	}
-
-	
-
 }
 
 ?>
