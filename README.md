@@ -762,7 +762,7 @@ This function will throw one of the following SOAP faults/exceptions if somethin
 **InvalidArgumentsException**, **NoMessagesFoundException**, or **InternalServerException**.
 You can find more details on these faults [here](#section5).
 
-##PreviewFaxDocument
+##FaxDocumentPreview
 ###Description
 
 This function provides you with a method to generate a preview of a saved document at different resolutions with various dithering settings. It returns a tiff data in base64 along with a page count.
@@ -983,6 +983,7 @@ public function testPreviewFaxDocument_StampMergeField_TextAndImage() {
 
 | **Name** | **Required** | **Type** | **Description** | **Default** |
 |--- | --- | --- | --- | ---|
+|**DocumentRef**| **X** | *String* | Unique identifier for the document to be uploaded. |
 |**Resolution**|  | *Resolution* |Resolution setting of the fax document. Refer to the resolution table below for possible resolution values.| normal |
 |**DitheringTechnique**| | *FaxDitheringTechnique* | Applies a custom dithering method to the fax document before transmission. | |
 |**DocMergeData** | | *Array of DocMergeData MergeFields* | Each mergefield has a key and a value. The system will look for the keys in a document and replace them with their corresponding value. ||
