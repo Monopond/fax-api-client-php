@@ -11,7 +11,7 @@ You can specify this by setting the third parameter of the `MonopondSOAPClient`.
 
 ```php
 include_once './MonopondSOAPClient.php';
-$client = new MonopondSOAPClient("username", "password", MPENV::Test);
+$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
 ```
 
 ##SendFax
