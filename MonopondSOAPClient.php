@@ -33,17 +33,86 @@ class MonopondSOAPClientV2 {
                 $soapDocuments = array();
                 
                 // Setup Documents as SOAP Objects
-        foreach($documentArray as $document) {
-            // Makes each individual document into a SOAP ready object
-            $soapDocuments[] = new SoapVar($document, SOAP_ENC_OBJECT,null,null,"Document");
+				foreach($documentArray as $document) {
+
+					// Apply mergefield to document.
+					if (!empty($document->DocMergeData) && !empty($document->DocMergeData->MergeField)) {
+						//print_r($document->DocMergeData->MergeField);	
+						$mergeFields = null;
+						$mergeFields = $this->convertMergeFieldArrayToSoapArray($document->DocMergeData->MergeField);
+						$document->DocMergeData = $mergeFields;
+					}
+
+					if (!empty($document->StampMergeData)) {
+						$mergeFields = null;
+						$mergeFields = $this->convertStampMergeFieldArrayToSoapArray($document->StampMergeData->MergeField);    
+						$document->StampMergeData = $mergeFields;
+					}
+
+				    // Makes each individual document into a SOAP ready object
+				    $soapDocuments[] = new SoapVar($document, SOAP_ENC_OBJECT,null,null,"Document");
+					$document = null;
+					
+				}
+
+
+				        // Make documents array SOAP ready
+				$soapDocuments = new SoapVar($soapDocuments,SOAP_ENC_OBJECT);
+
+                return $soapDocuments;
         }
 
 
-                // Make documents array SOAP ready
-        $soapDocuments = new SoapVar($soapDocuments,SOAP_ENC_OBJECT);
+    
+        private function convertMergeFieldArrayToSoapArray($mergeFieldArray) {
+                // Initialise a blank array
+                $soapMergeFields = array();
+                
+                // Setup MergeFields as SOAP Objects
+				foreach($mergeFieldArray as $mergeField) {
+				    // Makes each individual mergeField into a SOAP ready object
+					
+				    $soapMergeFields[] = new SoapVar($mergeField, SOAP_ENC_OBJECT,null,null,"MergeField");
+				}
 
 
-                return $soapDocuments;
+                // Make mergeField array SOAP ready
+				$soapMergeFields = new SoapVar($soapMergeFields,SOAP_ENC_OBJECT);
+
+                return $soapMergeFields;
+        }
+
+		private function convertStampMergeFieldArrayToSoapArray($mergeFieldArray) {
+                // Initialise a blank array
+                $soapMergeFields = array();
+                
+                // Setup MergeFields as SOAP Objects
+				foreach($mergeFieldArray as $mergeField) {
+					//Very messy but can't seem to find a way to insert attributes that works.
+				    //Makes each individual mergeField into a SOAP ready object
+					$soapMergeField = null;
+					$soapMergeField->Key = new SoapVar("<Key xCoord=\"" . $mergeField->Key->XCoord . "\" yCoord=\"".$mergeField->Key->YCoord."\"/>", XSD_ANYXML);
+					
+					if (!empty($mergeField->TextValue)) {
+						print_r($mergeField->TextValue);
+						$soapTextValue = new SoapVar("<TextValue fontName=\"".$mergeField->TextValue->FontName."\" fontSize=\"".$mergeField->TextValue->FontSize."\">".$mergeField->TextValue->TextValue."</TextValue>",XSD_ANYXML);
+						$soapMergeField->TextValue = $soapTextValue;
+					} elseif (!empty($mergeField->ImageValue)) {
+						$soapImageValueFileData = "<FileData>".$mergeField->ImageValue->FileData."</FileData>";
+						$soapImageValueFileName = "<FileName>".$mergeField->ImageValue->FileName."</FileName>";
+						$soapImageValueTemp = "<ImageValue width=\"".$mergeField->ImageValue->width."\" height=\"".$mergeField->ImageValue->height."\">".$soapImageValueFileName." ".$soapImageValueFileData."</ImageValue>";
+						$soapImageValue = new SoapVar($soapImageValueTemp,XSD_ANYXML);
+						$soapMergeField->ImageValue = $soapImageValue;
+					}
+					
+					$soapMergeFields[] = new SoapVar($soapMergeField, SOAP_ENC_OBJECT, null, null, "MergeField");
+				}
+				
+				//print_r($soapMergeFields);
+                // Make mergeField array SOAP ready
+				$soapMergeFields = new SoapVar($soapMergeFields,SOAP_ENC_OBJECT);
+
+                return $soapMergeFields;
         }
 
 
@@ -97,8 +166,8 @@ class MonopondSOAPClientV2 {
 
 
         // Uncomment the line below to print the XML of the request just made  
-        print_r($this->_SoapClient->__getLastResponse());
-
+        //print_r($this->_SoapClient->__getLastResponse());
+		//print_r($this->_SoapClient->__getLastRequest());
 
         $XMLResponseString = $this->_SoapClient->__getLastResponse();
         $XMLResponseString = str_replace("soap:", "", $XMLResponseString);
@@ -134,21 +203,31 @@ class MonopondSOAPClientV2 {
 
 	public function previewFaxDocument($previewFaxDocumentRequest) {
 		$previewFaxDocumentRequest = $this-> removeNullValues($previewFaxDocumentRequest);
-		$previewFaxDocumentRequest = new SoapVar($previewFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
+
+        if (!empty($previewFaxDocumentRequest->DocMergeData->MergeField)) {
+            $previewFaxDocumentRequest->DocMergeData = $this->convertMergeFieldArrayToSoapArray($previewFaxDocumentRequest->DocMergeData->MergeField);    
+        }
 	
+        if (!empty($previewFaxDocumentRequest->StampMergeData->MergeField)) {
+            $previewFaxDocumentRequest->StampMergeData = $this->convertStampMergeFieldArrayToSoapArray($previewFaxDocumentRequest->StampMergeData->MergeField);    
+        }
+
+		$previewFaxDocumentRequest = new SoapVar($previewFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
+
 		try{
 		        // Try to call preview fax
 		        $this->_SoapClient->FaxDocumentPreview($previewFaxDocumentRequest);
+				//print_r($this->_SoapClient->__getLastRequest());
 		}catch (SoapFault $exception) {
 		        // Print exception if one occured
 		        print_r($exception->getMessage());
-		        // Uncomment the line below to print the XML of the request just made  
+		        //Uncomment the line below to print the XML of the request just made  
 		        //print_r($this->_SoapClient->__getLastRequest());
 		}
-		
 		// Uncomment the line below to print the XML of the request just made   
-		print_r($this->_SoapClient->__getLastResponse());
-
+		//print_r($this->_SoapClient->__getLastResponse());
+		//print_r($this->_SoapClient->__getLastRequest());
+		
  		$XMLResponseString = $this->_SoapClient->__getLastResponse();
         $XMLResponseString = str_replace("soap:", "", $XMLResponseString);
         $XMLResponseString = str_replace("ns2:", "", $XMLResponseString);
@@ -156,7 +235,6 @@ class MonopondSOAPClientV2 {
         $element = new SimpleXMLElement($XMLResponseString);
         
         $messagesResponses = $element->Body->FaxDocumentPreviewResponse;
-		//print_r ($messagesResponses);
         return new MonopondFaxPreviewResponse($messagesResponses);
 	} 
 
@@ -298,9 +376,15 @@ class clsWSSEToken {
     }
 }
 
-class MonopondMergeField {
+class MonopondDocMergeField {
 	public $Key;
 	public $Value;
+}
+
+class MonopondStampMergeField {
+	public $Key;
+	public $TextValue;
+	public $ImageValue;
 }
 
 class MonopondDocMergeData {
@@ -308,32 +392,32 @@ class MonopondDocMergeData {
 }
 
 class MonopondStampMergeFieldKey {
-	public $xCoord;
-	public $yCoord;
+	public $XCoord;
+	public $YCoord;
+	
 }
 
 class MonopondStampMergeFieldTextValue {
-	public $fontName;
-	public $fontSize;
+	public $FontName;
+	public $FontSize;
+	public $TextValue;
 } 
 
 class MonopondStampMergeFieldImageValue {
-	public $fileName;
-	public $fileData;
+	public $FileName;
+	public $FileData;
+	public $Width;
+	public $Height;
 }
 
 class MonopondStampMergeData {
-	public $Key;
-	public $TextValue;
-	public $ImageValue;
+	public $MergeField;
 }
 
 class MonopondDocument {
     public $FileName;
     public $FileData;
     public $Order;
-    //public $DocMergeData;
-    //public $StampMergeData;
 }
 
 
