@@ -27,7 +27,7 @@ To send a fax to a single destination a request similar to the following example
 public function testSendFaxSendSingleFax(){
     	//needs actual connection
     	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+    	$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
     	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
     	$filedata = base64_encode($filedata);
 
@@ -61,7 +61,7 @@ To send faxes to multiple destinations a request similar to the following exampl
 public function testSendFaxMultipleFaxes(){
 		//needs actual connection
     	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+    	$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
     	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
     	$filedata = base64_encode($filedata);
 
@@ -121,7 +121,7 @@ When sending multiple faxes in batch it is recommended to group them into reques
 public function testSendFaxSendBroadcast(){
     	//needs actual connection
     	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+    	$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
     	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
     	$filedata = base64_encode($filedata);
 	
@@ -175,7 +175,7 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
 public function testSendFax_DocMergeField(){
 		//needs actual connection
     	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+    	$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
     	$filedata = fread(fopen("./tests/test.docx", "r"), filesize("./tests/test.docx"));
     	$filedata = base64_encode($filedata);
 
@@ -242,7 +242,7 @@ The example below shows a PDF that will be stamped with the text “Hello” at 
 public function testSendFax_StampMergeField_TextAndImageValue(){
     	//needs actual connection
     	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+    	$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
     	$filedata = fread(fopen("./tests/sample.tiff", "r"), filesize("./tests/sample.tiff"));
     	$filedata = base64_encode($filedata);
 
@@ -772,7 +772,7 @@ This function provides you with a method to generate a preview of a saved docume
 public function testPreviewFaxDocument_Basic() {
 		//needs actual connection
 		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+		$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
 		
 		// TODO: Setup PreviewFaxDocument
 		$previewFaxDocumentRequest = new MonopondFaxPreviewDocumentRequest();
@@ -791,7 +791,7 @@ public function testPreviewFaxDocument_Basic() {
 public function testPreviewFaxDocument_DocMergeField() {
 		//needs actual connection
 		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+		$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
 		
 		$mergeField1 = new MonopondDocMergeField();
 		$mergeField1->Key="field1";
@@ -822,7 +822,7 @@ public function testPreviewFaxDocument_DocMergeField() {
 public function testPreviewFaxDocument_StampMergeFieldTextValue() {
 		//needs actual connection
 		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+		$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
 		
 		//TODO: setup stampMergeField1
 		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
@@ -873,7 +873,7 @@ public function testPreviewFaxDocument_StampMergeFieldTextValue() {
 public function testPreviewFaxDocument_StampMergeFieldImageValue() {
 		//needs actual connection
 		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+		$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
 		
 		//TODO: setup stampMergeField1
 		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
@@ -928,7 +928,7 @@ public function testPreviewFaxDocument_StampMergeFieldImageValue() {
 public function testPreviewFaxDocument_StampMergeField_TextAndImage() {
 		//needs actual connection
 		//replace with valid username and password
-		$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+		$client = new MonopondSOAPClientV2_1("username", "password", MPENV::Test);
 		
 		//TODO: setup stampMergeField1
 		$stampMergeFieldKey1 = new MonopondStampMergeFieldKey();
