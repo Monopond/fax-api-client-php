@@ -4,10 +4,14 @@ api-client-php
 Monopond Fax API PHP Client
 
 #Building a Request
-To use Monopond SOAP PHP Client, start by including the `MonopondSOAPClient.php` (line 2) then creating an instance of the client by supplying your credentials (line 5). Your username and password should be enclosed in quotation marks.
+To use Monopond SOAP PHP Client, start by including the `MonopondSOAPClient.php` then creating an instance of the client by supplying your credentials. Your username and password should be enclosed in quotation marks.
+
+The client supports the idea of environments. Currently we have `Test` and `Production`.
+You can specify this by setting the third parameter of the `MonopondSOAPClient`. 
 
 ```php
-$client = new MonopondSOAPClientV2("username", "password", MPENV::Test);
+include_once './MonopondSOAPClient.php';
+$client = new MonopondSOAPClient("username", "password", MPENV::Test);
 ```
 
 ##SendFax
@@ -1063,7 +1067,24 @@ This function allows you to upload a document and save it under a document refer
 ###Sample Request
 
 ```php
-code here
+ public function testSaveFaxDocument() {
+		//needs actual connection
+		//replace with valid password and password
+		$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+		
+		$filedata = fread(fopen("./tests/sample.tiff", "r"), filesize("./tests/sample.tiff"));
+	    $filedata = base64_encode($filedata);
+
+		// TODO: Setup SaveFaxDocumentRequest 
+		$saveFaxDocumentRequest = new MonopondSaveFaxDocumentRequest();
+		$saveFaxDocumentRequest->DocumentRef = "test-php-tiffx";
+		$saveFaxDocumentRequest->FileName = "sample.tiff";
+		$saveFaxDocumentRequest->FileData = $filedata;
+		
+		// Call save fax method
+		$saveFaxDocumentResponse = $client->saveFaxDocument($saveFaxDocumentRequest);
+		//print_r($saveFaxDocumentResponse);
+	}
 ```
 
 ###Request
@@ -1087,7 +1108,19 @@ This function removes a saved fax document from the system.
 
 ###Sample Request
 ```php
-code here
+public function testDeleteFaxDocument() {
+		//needs actual connection
+		//replace with valid password and password
+		$client = new MonopondSOAPClientV2_1("password", "password", MPENV::Test);
+		
+		// TODO: Setup DeleteFaxDocumentRequest 
+		$deleteFaxDocumentRequest = new MonopondDeleteFaxDocumentRequest();
+		$deleteFaxDocumentRequest->DocumentRef = "testxx121x";
+		
+		// Call delete fax method
+		$deleteFaxDocumentResponse = $client->deleteFaxDocument($deleteFaxDocumentRequest);
+		//print_r($deleteFaxDocumentResponse);
+	}
 ```
 
 ###Request
