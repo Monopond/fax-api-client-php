@@ -347,6 +347,7 @@ Represents a fax document to be sent through the system. Supported file types ar
 
 **Name**|**Required**|**Type**|**Description**|**Default**
 -----|-----|-----|-----|-----
+|**DocumentRef**|| *String* | Unique identifier for the document to be uploaded. |
 **FileName**|**X**|String|The document filename including extension. This is important as it is used to help identify the document MIME type.|
 **FileData**|**X**|Base64|The document encoded in Base64 format.|
 **Order** | | Integer|If multiple documents are defined on a message this value will determine the order in which they will be transmitted.|0|
@@ -983,7 +984,7 @@ public function testPreviewFaxDocument_StampMergeField_TextAndImage() {
 
 | **Name** | **Required** | **Type** | **Description** | **Default** |
 |--- | --- | --- | --- | ---|
-|**DocumentRef**| **X** | *String* | Unique identifier for the document to be uploaded. |
+|**DocumentRef**| **X** | *String* | Unique identifier for the document to be previewed. |
 |**Resolution**|  | *Resolution* |Resolution setting of the fax document. Refer to the resolution table below for possible resolution values.| normal |
 |**DitheringTechnique**| | *FaxDitheringTechnique* | Applies a custom dithering method to the fax document before transmission. | |
 |**DocMergeData** | | *Array of DocMergeData MergeFields* | Each mergefield has a key and a value. The system will look for the keys in a document and replace them with their corresponding value. ||
