@@ -421,7 +421,7 @@ TODO: The default value is set to: “From %from%, To %to%|%a %b %d %H:%M %Y”
 
 |**Name** | **Required** | **Type** | **Description** |
 |-----|-----|-----|-----|
-|**fontName** |  | *String* | Font name to be used. |
+|**fontName** |  | *String* | Font name to be used. See list of support font names [here](#list-of-supported-font-names-for-stampmergefield-textvalue). |
 |**fontSize** |  | *Decimal* | Font size to be used. |
 
 **StampMergeFieldImageValue Properties:**
@@ -1016,7 +1016,7 @@ public function testPreviewFaxDocument_StampMergeField_TextAndImage() {
 
 |**Name** | **Required** | **Type** | **Description** |
 |-----|-----|-----|-----|
-|**fontName** |  | *String* | Font name to be used. |
+|**fontName** |  | *String* | Font name to be used. See list of support font names [here](#list-of-supported-font-names-for-stampmergefield-textvalue). |
 |**fontSize** |  | *Decimal* | Font size to be used. |
 
 **StampMergeFieldImageValue Parameters:**
@@ -1160,3 +1160,124 @@ All files are encoded in the Base64 encoding specified in RFC 2045 - MIME (Multi
 
 ###Dates
 Dates are always passed in ISO-8601 format with time zone. For example: “2012-07-17T19:27:23+08:00”
+
+## List of Supported font names for StampMergeField TextValue
+```
+Andale-Mono-Regular
+Arial-Black-Regular
+Arial-Bold
+Arial-Bold-Italic
+Arial-Italic
+Arial-Regular
+AvantGarde-Book
+AvantGarde-BookOblique
+AvantGarde-Demi
+AvantGarde-DemiOblique
+Bitstream-Charter-Bold
+Bitstream-Charter-Bold-Italic
+Bitstream-Charter-Italic
+Bitstream-Charter-Regular
+Bitstream-Vera-Sans-Bold
+Bitstream-Vera-Sans-Bold-Oblique
+Bitstream-Vera-Sans-Mono-Bold
+Bitstream-Vera-Sans-Mono-Bold-Oblique
+Bitstream-Vera-Sans-Mono-Oblique
+Bitstream-Vera-Sans-Mono-Roman
+Bitstream-Vera-Sans-Oblique
+Bitstream-Vera-Sans-Roman
+Bitstream-Vera-Serif-Bold
+Bitstream-Vera-Serif-Roman
+Bookman-Demi
+Bookman-DemiItalic
+Bookman-Light
+Bookman-LightItalic
+Century-Schoolbook-Bold
+Century-Schoolbook-Bold-Italic
+Century-Schoolbook-Italic
+Century-Schoolbook-Roman
+Comic-Sans-MS-Bold
+Comic-Sans-MS-Regular
+Courier
+Courier-Bold
+Courier-BoldOblique
+Courier-New-Bold
+Courier-New-Bold-Italic
+Courier-New-Italic
+Courier-New-Regular
+Courier-Oblique
+Dingbats-Regular
+Georgia-Bold
+Georgia-Bold-Italic
+Georgia-Italic
+Georgia-Regular
+Helvetica
+Helvetica-Bold
+Helvetica-BoldOblique
+Helvetica-Narrow
+Helvetica-Narrow-Bold
+Helvetica-Narrow-BoldOblique
+Helvetica-Narrow-Oblique
+Helvetica-Oblique
+Impact-Regular
+NewCenturySchlbk-Bold
+NewCenturySchlbk-BoldItalic
+NewCenturySchlbk-Italic
+NewCenturySchlbk-Roman
+Nimbus-Mono-Bold
+Nimbus-Mono-Bold-Oblique
+Nimbus-Mono-Regular
+Nimbus-Mono-Regular-Oblique
+Nimbus-Roman-No9-Bold
+Nimbus-Roman-No9-Bold-Italic
+Nimbus-Roman-No9-Regular
+Nimbus-Roman-No9-Regular-Italic
+Nimbus-Sans-Bold
+Nimbus-Sans-Bold-Italic
+Nimbus-Sans-Condensed-Bold
+Nimbus-Sans-Condensed-Bold-Italic
+Nimbus-Sans-Condensed-Regular
+Nimbus-Sans-Condensed-Regular-Italic
+Nimbus-Sans-Regular
+Nimbus-Sans-Regular-Italic
+Palatino-Bold
+Palatino-BoldItalic
+Palatino-Italic
+Palatino-Roman
+Standard-Symbols-Regular
+Symbol
+Tahoma-Regular
+Times-Bold
+Times-BoldItalic
+Times-Italic
+Times-New-Roman-Bold
+Times-New-Roman-Bold-Italic
+Times-New-Roman-Italic
+Times-New-Roman-Regular
+Times-Roman
+Trebuchet-MS-Bold
+Trebuchet-MS-Bold-Italic
+Trebuchet-MS-Italic
+Trebuchet-MS-Regular
+URW-Bookman-Demi-Bold
+URW-Bookman-Demi-Bold-Italic
+URW-Bookman-Light
+URW-Bookman-Light-Italic
+URW-Chancery-Medium-Italic
+URW-Gothic-Book
+URW-Gothic-Book-Oblique
+URW-Gothic-Demi
+URW-Gothic-Demi-Oblique
+URW-Palladio-Bold
+URW-Palladio-Bold-Italic
+URW-Palladio-Italic
+URW-Palladio-Roman
+Utopia-Bold
+Utopia-Bold-Italic
+Utopia-Italic
+Utopia-Regular
+Verdana-Bold
+Verdana-Bold-Italic
+Verdana-Italic
+Verdana-Regular
+Webdings-Regular
+```
