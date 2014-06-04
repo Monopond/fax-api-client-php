@@ -719,7 +719,7 @@ TODO: code here
 | **darken** | Darken dithering.|
 | **darken_more** | Darken more dithering.|
 | **darken_extra** | Darken extra dithering.|
-| **ligthen** | Lighten dithering.|
+| **lighten** | Lighten dithering.|
 | **lighten_more** | Lighten more dithering. |
 | **crosshatch** | Crosshatch dithering. |
 | **DETAILED** | Detailed dithering. |
