@@ -38,6 +38,7 @@
     $faxMessage->Resolution = "normal";
     $faxMessage->Retries = 0;
     $faxMessage->BusyRetries = 2;
+    $faxMessage->CLI = 61011111111;
     
     $faxMessage2 = new MonopondFaxMessage();
     $faxMessage2->MessageRef = "Testing-message-2";
@@ -46,6 +47,7 @@
     $faxMessage2->Resolution = "normal";
     $faxMessage2->Retries = 0;
     $faxMessage2->BusyRetries = 2;
+    $faxMessage2->CLI = 61011111111;
     
     /* Setup FaxSendRequest (Each contains an array of fax messages) */
     $sendFaxRequest = new MonopondSendFaxRequest();
@@ -55,6 +57,7 @@
     $sendFaxRequest->FaxMessages[] = $faxMessage;
     $sendFaxRequest->FaxMessages[] = $faxMessage2;
     $sendFaxRequest->Documents = array($document);
+    $sendFaxRequest->CLI = 3456;
 
     /* Send request to Monopond */
     $sendRespone = $client->sendFax($sendFaxRequest);
