@@ -207,8 +207,7 @@ class MonopondSOAPClientV2 {
         
         $messagesResponses = $element->Body->ResumeFaxResponse;
 
-
-        return new MonopondResumeFaxSResponse($messagesResponses);         
+        return new MonopondResumeFaxResponse($messagesResponses);         
     }         
 
 
@@ -247,6 +246,7 @@ class MonopondFaxMessage {
     public $Documents;
     public $ScheduledStartTime;
     public $HeaderFormat;
+    public $CLI;
 }
 
 
@@ -344,6 +344,7 @@ class MonopondSendFaxRequest{
     public $Documents;
     public $ScheduledStartTime;
     public $HeaderFormat;
+    public $CLI;
 }
 
 
