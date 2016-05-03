@@ -46,12 +46,15 @@ To send a fax to a single destination a request similar to the following example
  $faxMessage->Resolution = "normal";
  $faxMessage->Retries = 0;
  $faxMessage->BusyRetries = 2;
+ $faxMessage->CLI = 123456;
  
  // TODO: Setup FaxSendRequest 
  $sendFaxRequest = new MonopondSendFaxRequest();
  $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
  $sendFaxRequest->SendRef = "Send-Ref-1";
  $sendFaxRequest->FaxMessages[] = $faxMessage;
+ $sendFaxRequest->CLI = 65432;
+
  // Call send fax method
  $sendRespone = $client->sendFax($sendFaxRequest);
  print_r($sendRespone);
