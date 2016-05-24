@@ -219,9 +219,9 @@ class MonopondSOAPClientV2 {
 	}         
 
 	class MPENV {
-		const Production = "https://api.monopond.com/fax/soap/v2/?wsdl";
-		const Test = "http://test.api.monopond.com/fax/soap/v2/?wsdl";
-		const Local = "http://localhost:8000/fax/soap/v2?wsdl";
+		const Production = "https://api.monopond.com/fax/soap/v2.2/?wsdl";
+		const Test = "http://test.api.monopond.com/fax/soap/v2.2/?wsdl";
+		const Local = "http://localhost:8000/fax/soap/v2.2?wsdl";
 	}
 
 	class clsWSSEToken {
@@ -242,6 +242,7 @@ class MonopondSOAPClientV2 {
 		public $FileData;
 		public $Order;
 		public $DocMergeData;
+		public $DocumentRef;
 	}
 
 	class MonopondFaxMessage {
