@@ -168,7 +168,66 @@ This is what the file looks like after the fields ```field1```,```field2``` and 
 The example below shows ```field1``` will be replaced by the value of ```Test```.
 
 ```php
-TODO: code here
+	// TODO: Put your file path here
+    $filedata = fread(fopen("./test.docx", "r"), filesize("./test.docx"));
+	$filedata = base64_encode($filedata);
+
+	$mergeField = new MergeField();
+	$mergeField->Key = "name";
+	$mergeField->Value = "Raspberry Pi";
+
+	$document1 = new MonopondDocument();
+	$document1->DocumentRef = "send-1-document";
+	$document1->DocMergeData[] = $mergeField;
+
+	/* Setup FaxMessages (Each contains an array of document objects) */
+	$faxMessage = new MonopondFaxMessage();
+	$faxMessage->MessageRef = "message-1";
+	$faxMessage->SendTo = "61290120211";
+	$faxMessage->SendFrom = "Test Fax";
+	$faxMessage->Resolution = "normal";
+	$faxMessage->Retries = 0;
+	$faxMessage->BusyRetries = 2;
+	$faxMessage->CLI = 61290120211;
+	$faxMessage->Documents = array($document1);
+
+	$mergeField2 = new MergeField();
+	$mergeField2->Key = "name";
+	$mergeField2->Value = "Raspberry Pi 2";
+
+	$document2 = new MonopondDocument();
+	$document2->DocumentRef = "send-1-document";
+	$document2->DocMergeData[] = $mergeField2;
+
+	$faxMessage2 = new MonopondFaxMessage();
+	$faxMessage2->MessageRef = "message-2";
+	$faxMessage2->SendTo = "61290120211";
+	$faxMessage2->SendFrom = "Test Fax 2";
+	$faxMessage2->Resolution = "normal";
+	$faxMessage2->Retries = 0;
+	$faxMessage2->BusyRetries = 2;
+	$faxMessage2->CLI = 61011114111;
+	$faxMessage2->Documents = array($document2);
+
+	$baseDocument = new MonopondDocument();
+	$baseDocument->DocumentRef = "send-1-document";
+	$baseDocument->FileName = "file.docx";
+	$baseDocument->FileData = $filedata;
+	$baseDocument->Order = 0;
+
+	/* Setup FaxSendRequest (Each contains an array of fax messages) */
+	$sendFaxRequest = new MonopondSendFaxRequest();
+	$sendFaxRequest->BroadcastRef = "broadcast-1";
+	$sendFaxRequest->SendRef = "send-1";
+	$sendFaxRequest->HeaderFormat = "Testing";
+	$sendFaxRequest->FaxMessages[] = $faxMessage;
+	$sendFaxRequest->FaxMessages[] = $faxMessage2;
+	$sendFaxRequest->Documents = array($baseDocument);
+
+	/* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
 ```
 ###Sending Tiff and PDF files with StampMergeData:
 (This request only works in version 2.1(or higher) of the fax-api.)
@@ -196,7 +255,7 @@ The same tiff file, but this time, with a text stamp:
 The example below shows a PDF that will be stamped with the text “Hello” at xCoord=“1287” and yCoord=“421”, and an image at xCoord=“283” and yCoord=“120”
 
 ```php
-TODO: code here
+	TODO: code here  
 ```
 
 
