@@ -170,55 +170,61 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
 ```php
 	// TODO: Put your file path here
     $filedata = fread(fopen("./test.docx", "r"), filesize("./test.docx"));
-    $filedata = base64_encode($filedata);
+	$filedata = base64_encode($filedata);
 
- 	//Setup MergeFields
-    $mergeField = new MergeField();
-    $mergeField->Key = "name";
-    $mergeField->Value = "Raspberry Pi";
+	$mergeField = new MergeField();
+	$mergeField->Key = "name";
+	$mergeField->Value = "Raspberry Pi";
 
-    $mergeField2 = new MergeField();
-    $mergeField2->Key = "name2";
-    $mergeField2->Value = "Raspberry Pi 2";
+	$document1 = new MonopondDocument();
+	$document1->DocumentRef = "send-1-document";
+	$document1->DocMergeData[] = $mergeField;
 
-    /* Setup Documents */
-    $document = new MonopondDocument();
-    $document->FileName = "AnyFileName1.docx";
-    $document->FileData = $filedata;
-    $document->Order = 0;
-    $document->DocMergeData[] = $mergeField;
-    $document->DocMergeData[] = $mergeField2;
+	/* Setup FaxMessages (Each contains an array of document objects) */
+	$faxMessage = new MonopondFaxMessage();
+	$faxMessage->MessageRef = "message-1";
+	$faxMessage->SendTo = "61290120211";
+	$faxMessage->SendFrom = "Test Fax";
+	$faxMessage->Resolution = "normal";
+	$faxMessage->Retries = 0;
+	$faxMessage->BusyRetries = 2;
+	//$faxMessage->CLI = 61290120211;
+	$faxMessage->Documents = array($document1);
 
-    /* Setup FaxMessages (Each contains an array of document objects) */
-    $faxMessage = new MonopondFaxMessage();
-    $faxMessage->MessageRef = "Testing-message-mike-1";
-    $faxMessage->SendTo = "61290120211";
-    $faxMessage->SendFrom = "Test Fax";
-    $faxMessage->Resolution = "normal";
-    $faxMessage->Retries = 0;
-    $faxMessage->BusyRetries = 2;
-   	$faxMessage->CLI = 61290120211;
-    
-    $faxMessage2 = new MonopondFaxMessage();
-    $faxMessage2->MessageRef = "Testing-message-2-mike-2";
-    $faxMessage2->SendTo = "61290120211";
-    $faxMessage2->SendFrom = "Test Fax 2";
-    $faxMessage2->Resolution = "normal";
-    $faxMessage2->Retries = 0;
-    $faxMessage2->BusyRetries = 2;
-    $faxMessage2->CLI = 61011111111;
-    
-    /* Setup FaxSendRequest (Each contains an array of fax messages) */
-    $sendFaxRequest = new MonopondSendFaxRequest();
-    $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
-    $sendFaxRequest->SendRef = "Send-Ref-1";
-    $sendFaxRequest->HeaderFormat = "Testing";
-    $sendFaxRequest->FaxMessages[] = $faxMessage;
-    $sendFaxRequest->FaxMessages[] = $faxMessage2;
-    $sendFaxRequest->Documents = array($document);
-    $sendFaxRequest->CLI = 3456;
+	$mergeField2 = new MergeField();
+	$mergeField2->Key = "name";
+	$mergeField2->Value = "Raspberry Pi 2";
 
-    /* Send request to Monopond */
+	$document2 = new MonopondDocument();
+	$document2->DocumentRef = "send-1-document";
+	$document2->DocMergeData[] = $mergeField2;
+
+	$faxMessage2 = new MonopondFaxMessage();
+	$faxMessage2->MessageRef = "message-2";
+	$faxMessage2->SendTo = "61290120211";
+	$faxMessage2->SendFrom = "Test Fax 2";
+	$faxMessage2->Resolution = "normal";
+	$faxMessage2->Retries = 0;
+	$faxMessage2->BusyRetries = 2;
+	//$faxMessage2->CLI = 61011114111;
+	$faxMessage2->Documents = array($document2);
+
+	$baseDocument = new MonopondDocument();
+	$baseDocument->DocumentRef = "send-1-document";
+	$baseDocument->FileName = "file.docx";
+	$baseDocument->FileData = $filedata;
+	$baseDocument->Order = 0;
+
+	/* Setup FaxSendRequest (Each contains an array of fax messages) */
+	$sendFaxRequest = new MonopondSendFaxRequest();
+	$sendFaxRequest->BroadcastRef = "broadcast-1";
+	$sendFaxRequest->SendRef = "send-1";
+	$sendFaxRequest->HeaderFormat = "Testing";
+	$sendFaxRequest->FaxMessages[] = $faxMessage;
+	$sendFaxRequest->FaxMessages[] = $faxMessage2;
+	$sendFaxRequest->Documents = array($baseDocument);
+
+	/* Send request to Monopond */
     $sendRespone = $client->sendFax($sendFaxRequest);
     /* Display response */
     print_r($sendRespone);
