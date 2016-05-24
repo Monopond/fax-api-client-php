@@ -188,7 +188,7 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
 	$faxMessage->Resolution = "normal";
 	$faxMessage->Retries = 0;
 	$faxMessage->BusyRetries = 2;
-	//$faxMessage->CLI = 61290120211;
+	$faxMessage->CLI = 61290120211;
 	$faxMessage->Documents = array($document1);
 
 	$mergeField2 = new MergeField();
@@ -206,7 +206,7 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
 	$faxMessage2->Resolution = "normal";
 	$faxMessage2->Retries = 0;
 	$faxMessage2->BusyRetries = 2;
-	//$faxMessage2->CLI = 61011114111;
+	$faxMessage2->CLI = 61011114111;
 	$faxMessage2->Documents = array($document2);
 
 	$baseDocument = new MonopondDocument();
