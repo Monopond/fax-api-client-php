@@ -168,35 +168,7 @@ This is what the file looks like after the fields ```field1```,```field2``` and 
 The example below shows ```field1``` will be replaced by the value of ```Test```.
 
 ```php
-TODO: code here
-```
-###Sending Tiff and PDF files with StampMergeData:
-(This request only works in version 2.1(or higher) of the fax-api.)
-
-This request allows a PDF or TIFF file to be stamped with an image or text, based on X-Y coordinates. The x and y coordinates (0,0) starts at the top left part of the document. The screenshots below are examples of what the request does.
-
-Original tiff file:
-
-![before](https://github.com/Monopond/fax-api/raw/master/img/StampMergeData/image_stamp/before.png)
-
-Sample stamp image:
-
-![stamp](https://github.com/Monopond/fax-api/raw/master/img/StampMergeData/image_stamp/stamp.png)
-
-This is what the tiff file looks like after stamping it with the image above:
-
-![after](https://github.com/Monopond/fax-api/raw/master/img/StampMergeData/image_stamp/after.png) 
-
-The same tiff file, but this time, with a text stamp:
-
-![after](https://github.com/Monopond/fax-api/raw/master/img/StampMergeData/text_stamp/after.png) 
-
-##### Sample Request
-
-The example below shows a PDF that will be stamped with the text “Hello” at xCoord=“1287” and yCoord=“421”, and an image at xCoord=“283” and yCoord=“120”
-
-```php
-    // TODO: Put your file path here
+	// TODO: Put your file path here
     $filedata = fread(fopen("./test.docx", "r"), filesize("./test.docx"));
     $filedata = base64_encode($filedata);
 
@@ -250,6 +222,34 @@ The example below shows a PDF that will be stamped with the text “Hello” at 
     $sendRespone = $client->sendFax($sendFaxRequest);
     /* Display response */
     print_r($sendRespone);
+```
+###Sending Tiff and PDF files with StampMergeData:
+(This request only works in version 2.1(or higher) of the fax-api.)
+
+This request allows a PDF or TIFF file to be stamped with an image or text, based on X-Y coordinates. The x and y coordinates (0,0) starts at the top left part of the document. The screenshots below are examples of what the request does.
+
+Original tiff file:
+
+![before](https://github.com/Monopond/fax-api/raw/master/img/StampMergeData/image_stamp/before.png)
+
+Sample stamp image:
+
+![stamp](https://github.com/Monopond/fax-api/raw/master/img/StampMergeData/image_stamp/stamp.png)
+
+This is what the tiff file looks like after stamping it with the image above:
+
+![after](https://github.com/Monopond/fax-api/raw/master/img/StampMergeData/image_stamp/after.png) 
+
+The same tiff file, but this time, with a text stamp:
+
+![after](https://github.com/Monopond/fax-api/raw/master/img/StampMergeData/text_stamp/after.png) 
+
+##### Sample Request
+
+The example below shows a PDF that will be stamped with the text “Hello” at xCoord=“1287” and yCoord=“421”, and an image at xCoord=“283” and yCoord=“120”
+
+```php
+	TODO: code here  
 ```
 
 
