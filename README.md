@@ -172,7 +172,7 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
     $filedata = fread(fopen("./test.docx", "r"), filesize("./test.docx"));
 	$filedata = base64_encode($filedata);
 
-	$mergeField = new MergeField();
+	$mergeField = new MonopondMergeField();
 	$mergeField->Key = "name";
 	$mergeField->Value = "Raspberry Pi";
 
@@ -191,7 +191,7 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
 	$faxMessage->CLI = 61290120211;
 	$faxMessage->Documents = array($document1);
 
-	$mergeField2 = new MergeField();
+	$mergeField2 = new MonopondMergeField();
 	$mergeField2->Key = "name";
 	$mergeField2->Value = "Raspberry Pi 2";
 
