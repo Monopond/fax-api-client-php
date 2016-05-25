@@ -33,12 +33,17 @@ class MonopondSOAPClientV2 {
 				
 			// Setup Documents as SOAP Objects
 			foreach($documentArray as $document) {
+
 				// Makes each individual document into a SOAP ready object
-				$soapDocuments[] = new SoapVar($document, SOAP_ENC_OBJECT,null,null,"Document");
+
+				if(!$document->DocumentRef) {
+					$document = $this->removeNullValues($document);
+				}
 
 				if(!empty($document->DocMergeData)) {
-					$document->DocMergeData = $this->convertDocMergeDataArrayToSoapArray($document->DocMergeData);
+					$document->DocMergeData = $this->convertMergeFieldArrayToSoapArray($document->DocMergeData);
 				}
+				$soapDocuments[] = new SoapVar($document, SOAP_ENC_OBJECT,null,null,"Document");
 			}
 
 			// Make documents array SOAP ready
@@ -47,16 +52,16 @@ class MonopondSOAPClientV2 {
 			return $soapDocuments;
 		}
 
-		private function convertDocMergeDataArrayToSoapArray($docMergeDataArray) {
-			$mergeFields = array();
+		private function convertMergeFieldArrayToSoapArray($mergeFieldArray) {
+			$soapMergeFields = array();
 
-			foreach ($docMergeDataArray as $mergeField) {
-				$mergeFields[] = new SoapVar($mergeField, SOAP_ENC_OBJECT, null, null, "MergeFields");
+			foreach ($mergeFieldArray as $mergeField) {
+				$soapMergeFields[] = new SoapVar($mergeField, SOAP_ENC_OBJECT, null, null, "MergeField");
 			}
 
-			$mergeFields = new SoapVar($mergeFields, SOAP_ENC_OBJECT);
+			$soapMergeFields = new SoapVar($soapMergeFields, SOAP_ENC_OBJECT);
 
-			return $mergeFields;
+			return $soapMergeFields;
 		}
 
 		private function removeNullValues($object) {
@@ -232,7 +237,7 @@ class MonopondSOAPClientV2 {
 		}
 	}
 
-	class MergeField {
+	class MonopondMergeField {
 	    public $Key;
 	    public $Value;
 	}
