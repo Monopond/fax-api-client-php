@@ -17,13 +17,13 @@ To use Monopond SOAP PHP Client, start by including the `MonopondSOAPClient.php`
  ?>
 ```
 
-##SendFax
-###Description
+## SendFax
+### Description
 This is the core function in the API allowing you to send faxes on the platform. 
 
 Your specific faxing requirements will dictate which send request type below should be used. The two common use cases would be the sending of a single fax document to one destination and the sending of a single fax document to multiple destinations.
 
-###Sending a single fax:
+### Sending a single fax:
 To send a fax to a single destination a request similar to the following example can be used:
 
 ```php
@@ -60,7 +60,7 @@ To send a fax to a single destination a request similar to the following example
  print_r($sendRespone);
 ```
 
-###Sending multiple faxes:
+### Sending multiple faxes:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
 
 ```php
@@ -113,7 +113,7 @@ To send faxes to multiple destinations a request similar to the following exampl
  print_r($sendRespone);
 ```
 
-###Sending faxes to multiple destinations with the same document (broadcasting):
+### Sending faxes to multiple destinations with the same document (broadcasting):
 To send the same fax content to multiple destinations (broadcasting) a request similar to the example below can be used.
 
 This method is recommended for broadcasting as it takes advantage of the multiple tiers in the send request. This eliminates the repeated parameters out of the individual fax message elements which are instead inherited from the parent send fax request. An example below shows `SendFrom` being used for both FaxMessages. While not shown in the example below further control can be achieved over individual fax elements to override the parameters set in the parent.
@@ -151,7 +151,7 @@ When sending multiple faxes in batch it is recommended to group them into reques
  print_r($sendRespone);
 ```
 
-###Sending Microsoft Documents With DocMergeData:
+### Sending Microsoft Documents With DocMergeData:
 (This request only works in version 2.1(or higher) of the fax-api.)
 
 This request is used to send a Microsoft document with replaceable variables or merge fields. The merge field follows the pattern ```<mf:key>```.  If your key is ```field1```, it should be typed as ```<mf:field1>``` in the document. Note that the key must be unique within the whole document. The screenshots below are examples of what the request does.
@@ -229,7 +229,7 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
     /* Display response */
     print_r($sendRespone);
 ```
-###Sending Tiff and PDF files with StampMergeData:
+### Sending Tiff and PDF files with StampMergeData:
 (This request only works in version 2.1(or higher) of the fax-api.)
 
 This request allows a PDF or TIFF file to be stamped with an image or text, based on X-Y coordinates. The x and y coordinates (0,0) starts at the top left part of the document. The screenshots below are examples of what the request does.
@@ -259,7 +259,7 @@ The example below shows a PDF that will be stamped with the text “Hello” at 
 ```
 
 
-###sendFaxRequest Properties:
+### sendFaxRequest Properties:
 **Name**|**Required**|**Type**|**Description**|**Default**
 -----|-----|-----|-----|-----
 **BroadcastRef**||String|Allows the user to tag all faxes in this request with a user-defined broadcastreference. These faxes can then be retrieved at a later point based on this reference.|
@@ -383,16 +383,16 @@ TODO: The default value is set to: “From %from%, To %to%|%a %b %d %H:%M %Y”
 |**fileName** |  | *String* | The document filename including extension. This is important as it is used to help identify the document MIME type. |
 |**fileData** |  | *Base64* | The document encoded in Base64 format. |
 
-###Response
+### Response
 The response received from a `SendFaxRequest` matches the response you receive when calling the `FaxStatus` method call with a `send` verbosity level.
 
-###SOAP Faults
+### SOAP Faults
 This function will throw one of the following SOAP faults/exceptions if something went wrong:
 **InvalidArgumentsException, NoMessagesFoundException, DocumentContentTypeNotFoundException, or InternalServerException.**
 You can find more details on these faults [here](#section5).
 
-##FaxStatus
-###Description
+## FaxStatus
+### Description
 
 This function provides you with a method of retrieving the status, details and results of fax messages sent. While this is a legitimate method of retrieving results we strongly advise that you take advantage of our callback service, which will push these fax results to you as they are completed.
 
@@ -423,7 +423,7 @@ There are multiple levels of verbosity available in the request; these are expla
 | **results** |Includes the results from ***“send”*** along with the sending results of the fax messages. |
 | **all** | all Includes the results from both ***“details”*** and ***“results”*** along with some extra uncommon fields. |
 
-###Sending a faxStatus Request with “brief” verbosity:
+### Sending a faxStatus Request with “brief” verbosity:
 ```php
  // TODO: Setup FaxStatusRequest 
  $faxStatusRequest = new MonopondFaxStatusRequest();
@@ -433,7 +433,7 @@ $faxStatusRequest->Verbosity = "brief";
  $faxStatus = $client->faxStatus($faxStatusRequest);
  print_r($faxStatus);
 ```
-###Sending a faxStatus Request with “send” verbosity:
+### Sending a faxStatus Request with “send” verbosity:
 
 ```php
  // TODO: Setup FaxStatusRequest 
@@ -444,7 +444,7 @@ $faxStatusRequest->Verbosity = "brief";
  $faxStatus = $client->faxStatus($faxStatusRequest);
  print_r($faxStatus);
 ```
-###Sending a faxStatus Request with “details” verbosity:
+### Sending a faxStatus Request with “details” verbosity:
 ```php
  // TODO: Setup FaxStatusRequest 
  $faxStatusRequest = new MonopondFaxStatusRequest();
@@ -454,7 +454,7 @@ $faxStatusRequest->Verbosity = "brief";
  $faxStatus = $client->faxStatus($faxStatusRequest);
  print_r($faxStatus);
 ```
-###Sending a faxStatus Request with “results” verbosity:
+### Sending a faxStatus Request with “results” verbosity:
 
 ```php
  // TODO: Setup FaxStatusRequest 
@@ -465,7 +465,7 @@ $faxStatusRequest->Verbosity = "brief";
  $faxStatus = $client->faxStatus($faxStatusRequest);
  print_r($faxStatus);
 ```
-###Response
+### Response
 The response received depends entirely on the verbosity level specified.
 
 **FaxStatusResponse:**
@@ -564,22 +564,22 @@ Contains the total count of how many faxes ended in each result, as well as some
 | **FAX_NO_ANSWER** | No answer |
 | **FAX_UNKNOWN** | Unknown fax error |
 
-###SOAP Faults
+### SOAP Faults
 
 This function will throw one of the following SOAP faults/exceptions if something went wrong:
 
 **InvalidArgumentsException**, **NoMessagesFoundException**, or **InternalServerException**.
 You can find more details on these faults [here](#section5).
 
-##StopFax
+## StopFax
 
-###Description
+### Description
 Stops a fax message from sending. This fax message must either be paused, queued, starting or sending. Please note the fax cannot be stopped if the fax is currently in the process of being transmitted to the destination device.
 
 When making a stop request you must provide at least a `BroadcastRef`, `SendRef` or `MessageRef`. The function will also accept a combination of these to further narrow down the request.
 
-###Request
-####StopFaxRequest Properties:
+### Request
+#### StopFaxRequest Properties:
 
 | Name | Required | Type | Description |
 | --- | --- | --- | --- | --- |
@@ -587,7 +587,7 @@ When making a stop request you must provide at least a `BroadcastRef`, `SendRef`
 | **SendRef** |  | *String* | User-defined send reference. |
 | **MessageRef** |  | *String* | User-defined message reference. |
 
-###StopFax Request limiting by BroadcastRef:
+### StopFax Request limiting by BroadcastRef:
 ```php
 // TODO: Setup StopFaxRequest
  $stopFaxRequest = new MonopondStopFaxRequest();
@@ -595,7 +595,7 @@ When making a stop request you must provide at least a `BroadcastRef`, `SendRef`
  $stopFax = $client->stopFax($stopFaxRequest);
  print_r($stopFax);
 ```
-###StopFax Request limiting by SendRef:
+### StopFax Request limiting by SendRef:
 
 ```php
 $stopFaxRequest = new MonopondStopFaxRequest();
@@ -603,7 +603,7 @@ $stopFaxRequest = new MonopondStopFaxRequest();
  $stopFax = $client->stopFax($stopFaxRequest);
  print_r($stopFax);
 ```
-###StopFax Request limiting by MessageRef:
+### StopFax Request limiting by MessageRef:
 ```php
  // TODO: Setup StopFaxRequest
  $stopFaxRequest = new MonopondStopFaxRequest();
@@ -612,23 +612,23 @@ $stopFaxRequest = new MonopondStopFaxRequest();
  print_r($stopFax);
 ```
 
-###Response
+### Response
 The response received from a `StopFaxRequest` is the same response you would receive when calling the `FaxStatus` method call with the `send` verbosity level.
 
-###SOAP Faults
+### SOAP Faults
 This function will throw one of the following SOAP faults/exceptions if something went wrong:
 
 **InvalidArgumentsException**, **NoMessagesFoundException**, or **InternalServerException**.
 You can find more details on these faults [here](#section5).
-##PauseFax
+## PauseFax
 
-###Description
+### Description
 Pauses a fax message before it starts transmitting. This fax message must either be queued, starting or sending. Please note the fax cannot be paused if the message is currently being transmitted to the destination device.
 
 When making a pause request, you must provide at least a `BroadcastRef`, `SendRef` or `MessageRef`. The function will also accept a combination of these to further narrow down the request. 
 
-###Request
-####PauseFaxRequest Properties:
+### Request
+#### PauseFaxRequest Properties:
 | Name | Required | Type | Description |
 | --- | --- | --- | --- |
 | **BroadcastRef** | | *String* | User-defined broadcast reference. |
@@ -636,7 +636,7 @@ When making a pause request, you must provide at least a `BroadcastRef`, `SendRe
 | **MessageRef** | | *String* | User-defined message reference. |
 
 
-###PauseFax Request limiting by BroadcastRef:
+### PauseFax Request limiting by BroadcastRef:
 ```php
 // TODO: Setup PauseFaxRequest
  $pauseFaxRequest = new MonopondPauseFaxRequest();
@@ -645,7 +645,7 @@ When making a pause request, you must provide at least a `BroadcastRef`, `SendRe
  print_r($pauseFax);
 ```
 
-###PauseFax Request limiting by SendRef:
+### PauseFax Request limiting by SendRef:
 ```php
  // TODO: Setup PauseFaxRequest
  $pauseFaxRequest = new MonopondPauseFaxRequest();
@@ -654,7 +654,7 @@ When making a pause request, you must provide at least a `BroadcastRef`, `SendRe
  print_r($pauseFax);
 ```
 
-###PauseFax Request limiting by MessageRef:
+### PauseFax Request limiting by MessageRef:
 ```php
 // TODO: Setup PauseFaxRequest
  $pauseFaxRequest = new MonopondPauseFaxRequest();
@@ -662,27 +662,27 @@ When making a pause request, you must provide at least a `BroadcastRef`, `SendRe
  $pauseFax = $client->pauseFax($pauseFaxRequest);
  print_r($pauseFax);
 ```
-###Response
+### Response
 The response received from a `PauseFaxRequest` is the same response you would receive when calling the `FaxStatus` method call with the `send` verbosity level. 
 
-###SOAP Faults
+### SOAP Faults
 This function will throw one of the following SOAP faults/exceptions if something went wrong:
 **InvalidArgumentsException**, **NoMessagesFoundException**, or **InternalServerException**.
 You can find more details on these faults in [here](#section5).
 
-##ResumeFax
+## ResumeFax
 
 When making a resume request, you must provide at least a `BroadcastRef`, `SendRef` or `MessageRef`. The function will also accept a combination of these to further narrow down the request. 
 
-###Request
-####ResumeFaxRequest Properties:
+### Request
+#### ResumeFaxRequest Properties:
 | Name | Required | Type | Description |
 | --- | --- | --- | --- |
 | **BroadcastRef** | | *String* | User-defined broadcast reference. |
 | **SendRef** | | *String* | User-defined send reference. |
 | **MessageRef** | | *String* | User-defined message reference. |
 
-###ResumeFax Request limiting by BroadcastRef:
+### ResumeFax Request limiting by BroadcastRef:
 ```php
  // TODO: Setup ResumeFaxRequest
  $resumeFaxRequest = new MonopondResumeFaxRequest();
@@ -690,7 +690,7 @@ When making a resume request, you must provide at least a `BroadcastRef`, `SendR
  $resumeFax = $client->resumeFax($resumeFaxRequest);
  print_r($resumeFax);
 ```
-###ResumeFax Request limiting by SendRef:
+### ResumeFax Request limiting by SendRef:
 ```php
 // TODO: Setup ResumeFaxRequest
  $resumeFaxRequest = new MonopondResumeFaxRequest();
@@ -698,7 +698,7 @@ When making a resume request, you must provide at least a `BroadcastRef`, `SendR
  $resumeFax = $client->resumeFax($resumeFaxRequest);
  print_r($resumeFax);
 ```
-###ResumeFax Request limiting by MessageRef:
+### ResumeFax Request limiting by MessageRef:
 ```php
  $resumeFaxRequest = new MonopondResumeFaxRequest();
  $resumeFaxRequest->MessageRef = "Testing-message-1";
@@ -707,25 +707,25 @@ When making a resume request, you must provide at least a `BroadcastRef`, `SendR
 ```
 
 
-###Response
+### Response
 The response received from a `ResumeFaxRequest` is the same response you would receive when calling the `FaxStatus` method call with the `send` verbosity level. 
 
-###SOAP Faults
+### SOAP Faults
 This function will throw one of the following SOAP faults/exceptions if something went wrong:
 **InvalidArgumentsException**, **NoMessagesFoundException**, or **InternalServerException**.
 You can find more details on these faults [here](#section5).
 
-##PreviewFaxDocument
-###Description
+## PreviewFaxDocument
+### Description
 
 This function provides you with a method to generate a preview of a saved document at different resolutions with various dithering settings. It returns a tiff data in base64 along with a page count.
 
-###Sample Request
+### Sample Request
 ```php
 TODO: code here
 ```
 
-###Request
+### Request
 **FaxDocumentPreviewRequest Parameters:**
 
 | **Name** | **Required** | **Type** | **Description** | **Default** |
@@ -793,7 +793,7 @@ TODO: code here
 | **normal** | Normal standard resolution (98 scan lines per inch) |
 | **fine** | Fine resolution (196 scan lines per inch) |
 
-###Response
+### Response
 **FaxDocumentPreviewResponse**
 
 **Name** | **Type** | **Description** 
@@ -801,23 +801,23 @@ TODO: code here
 **TiffPreview** | *String* | A preview version of the document encoded in Base64 format. 
 **NumberOfPages** | *Int* | Total number of pages in the document preview.
 
-###SOAP Faults
+### SOAP Faults
 This function will throw one of the following SOAP faults/exceptions if something went wrong:
 **DocumentRefDoesNotExistException**, **InternalServerException**, **UnsupportedDocumentContentType**, **MergeFieldDoesNotMatchDocumentTypeException**, **UnknownHostException**.
 You can find more details on these faults in Section 5 of this document.You can find more details on these faults in the next section of this document.
 
-##SaveFaxDocument
-###Description
+## SaveFaxDocument
+### Description
 
 This function allows you to upload a document and save it under a document reference (DocumentRef) for later use. (Note: These saved documents only last 30 days on the system.)
 
-###Sample Request
+### Sample Request
 
 ```php
 TODO: code here
 ```
 
-###Request
+### Request
 **SaveFaxDocumentRequest Parameters:**
 
 | **Name** | **Required** | **Type** | **Description** |
@@ -826,53 +826,53 @@ TODO: code here
 |**FileName**| **X** | *String* | The document filename including extension. This is important as it is used to help identify the document MIME type. |
 | **FileData**|**X**| *Base64* |The document encoded in Base64 format.| |
 
-###SOAP Faults
+### SOAP Faults
 This function will throw one of the following SOAP faults/exceptions if something went wrong:
 **DocumentRefAlreadyExistsException**, **DocumentContentTypeNotFoundException**, **InternalServerException**.
 You can find more details on these faults in Section 5 of this document.You can find more details on these faults in the next section of this document.
 
-##DeleteFaxDocument
-###Description
+## DeleteFaxDocument
+### Description
 
 This function removes a saved fax document from the system.
 
-###Sample Request
+### Sample Request
 ```php
 TODO: code here
 ```
 
-###Request
+### Request
 **DeleteFaxDocumentRequest Parameters:**
 
 | **Name** | **Required** | **Type** | **Description** |
 |--- | --- | --- | --- | ---|
 |**DocumentRef**| **X** | *String* | Unique identifier for the document to be deleted. |
 
-###SOAP Faults
+### SOAP Faults
 This function will throw one of the following SOAP faults/exceptions if something went wrong:
 **DocumentRefDoesNotExistException**, **InternalServerException**.
 You can find more details on these faults in Section 5 of this document.You can find more details on these faults in the next section of this document.
 
 <a name="section5"></a> 
-#More Information
-##Exceptions/SOAP Faults
+# More Information
+## Exceptions/SOAP Faults
 If an error occurs during a request on the Monopond Fax API the service will throw a SOAP fault or exception. Each exception is listed in detail below. 
-###InvalidArgumentsException
+### InvalidArgumentsException
 One or more of the arguments passed in the request were invalid. Each element that failed validation is included in the fault details along with the reason for failure.
-###DocumentContentTypeNotFoundException
+### DocumentContentTypeNotFoundException
 There was an error while decoding the document provided; we were unable to determine its content type.
-###DocumentRefAlreadyExistsException
+### DocumentRefAlreadyExistsException
 There is already a document on your account with this DocumentRef.
-###DocumentContentTypeNotFoundException
+### DocumentContentTypeNotFoundException
 Content type could not be found for the document.
-###NoMessagesFoundException
+### NoMessagesFoundException
 Based on the references sent in the request no messages could be found that match the criteria.
-###InternalServerException
+### InternalServerException
 An unusual error occurred on the platform. If this error occurs please contact support for further instruction.
 
-##General Properties and File Formatting
-###File Encoding
+## General Properties and File Formatting
+### File Encoding
 All files are encoded in the Base64 encoding specified in RFC 2045 - MIME (Multipurpose Internet Mail Extensions). The Base64 encoding is designed to represent arbitrary sequences of octets in a form that need not be humanly readable. A 65-character subset ([A-Za-z0-9+/=]) of US-ASCII is used, enabling 6 bits to be represented per printable character. For more information see http://tools.ietf.org/html/rfc2045 and http://en.wikipedia.org/wiki/Base64
 
-###Dates
+### Dates
 Dates are always passed in ISO-8601 format with time zone. For example: “2012-07-17T19:27:23+08:00”
