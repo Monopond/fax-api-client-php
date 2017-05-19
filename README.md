@@ -407,7 +407,7 @@ There are multiple levels of verbosity available in the request; these are expla
 **FaxStatusRequest Properties:**
 
 | **Name** | **Required** | **Type** | **Description** |
-|--- | --- | --- | --- | ---|
+|--- | --- | --- | --- | 
 |**BroadcastRef**|  | *String* | User-defined broadcast reference. |
 |**SendRef**|  | *String* | User-defined send reference. |
 |**MessageRef**|  | *String* | User-defined message reference. |
@@ -520,7 +520,7 @@ Contains the total count of how many faxes ended in each result, as well as some
 **FaxDetails:**
 
 | Name | Type | Verbosity |
-| --- | --- | --- | --- |
+| --- | --- | --- |
 | **sendFrom** | *Alphanumeric String* | *details* |
 | **resolution** | *String* | *details* |
 | **retries** | *Integer* | *details* |
@@ -582,7 +582,7 @@ When making a stop request you must provide at least a `BroadcastRef`, `SendRef`
 #### StopFaxRequest Properties:
 
 | Name | Required | Type | Description |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | **BroadcastRef** | | *String* | User-defined broadcast reference. |
 | **SendRef** |  | *String* | User-defined send reference. |
 | **MessageRef** |  | *String* | User-defined message reference. |
@@ -821,7 +821,7 @@ TODO: code here
 **SaveFaxDocumentRequest Parameters:**
 
 | **Name** | **Required** | **Type** | **Description** |
-|--- | --- | --- | --- | ---|
+|--- | --- | --- | --- | 
 |**DocumentRef**| **X** | *String* | Unique identifier for the document to be uploaded. |
 |**FileName**| **X** | *String* | The document filename including extension. This is important as it is used to help identify the document MIME type. |
 | **FileData**|**X**| *Base64* |The document encoded in Base64 format.| |
@@ -845,7 +845,7 @@ TODO: code here
 **DeleteFaxDocumentRequest Parameters:**
 
 | **Name** | **Required** | **Type** | **Description** |
-|--- | --- | --- | --- | ---|
+|--- | --- | --- | --- |
 |**DocumentRef**| **X** | *String* | Unique identifier for the document to be deleted. |
 
 ### SOAP Faults
