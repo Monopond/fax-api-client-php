@@ -22,8 +22,16 @@ class MonopondSOAPClientV2 {
 			$SoapVarHeaderVal=new SoapVar($SoapVarWSSEToken,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
 			$SoapHeader = new SoapHeader($this->_strWSSENS,'Security',$SoapVarHeaderVal,true);
 			
+			$context = stream_context_create(array(
+		        'ssl' => array(
+		        'verify_peer' => false,
+		        'verify_peer_name' => false,
+		        'allow_self_signed' => true
+       		 	)
+			));
+
 			// Creating the SOAP client 
-			$this->_SoapClient = new SoapClient($this->_wsdl, array("trace" => 1));
+			$this->_SoapClient = new SoapClient($this->_wsdl, array("trace" => 1, "stream_context" => $context));
 			$this->_SoapClient->__setSoapHeaders(array($SoapHeader));
 		}
 		
@@ -224,9 +232,10 @@ class MonopondSOAPClientV2 {
 	}         
 
 	class MPENV {
-		const Production = "https://api.monopond.com/fax/soap/v2.2/?wsdl";
-		const Test = "http://test.api.monopond.com/fax/soap/v2.2/?wsdl";
-		const Local = "http://localhost:8000/fax/soap/v2.2?wsdl";
+		const PRODUCTION = "https://api.monopond.com/fax/soap/v2.2/?wsdl";
+		const MONOPOND_PRODUCTION = "https://beta.monopond.com/api/fax/v2.1?wsdl";
+		const TEST = "http://test.api.monopond.com/fax/soap/v2.2/?wsdl";
+		const LOCAL = "http://localhost:8000/fax/soap/v2.2?wsdl";
 	}
 
 	class clsWSSEToken {
