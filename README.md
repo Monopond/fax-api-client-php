@@ -11,7 +11,7 @@ To use Monopond SOAP PHP Client, start by including the `MonopondSOAPClient.php`
      include_once './MonopondSOAPClient.php';
      
      // TODO: Enter your own credentials here
-     $client = new MonopondSOAPClientV2("myusername", "mypassword", MPENV::Production);
+     $client = new MonopondSOAPClientV2("myusername", "mypassword", MPENV::PRODUCTION);
      
      // TODO: Set up your request here
  ?>

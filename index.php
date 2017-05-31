@@ -2,10 +2,10 @@
     include_once './MonopondSOAPClient.php';
     
     // TODO: Enter your own credentials here
-    $client = new MonopondSOAPClientV2("username", "password", MPENV::Production);
+    $client = new MonopondSOAPClientV2("username", "password", MPENV::PRODUCTION);
     
     // TODO: Put your file path here
-    $filedata = fread(fopen("./test.txt", "r"), filesize("./test.txt"));
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
     $filedata = base64_encode($filedata);
     
     /* Setup Documents */
@@ -32,7 +32,7 @@
     
     /* Setup FaxMessages (Each contains an array of document objects) */
     $faxMessage = new MonopondFaxMessage();
-    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->MessageRef = "Testing-message-16";
     $faxMessage->SendTo = "61011111111";
     $faxMessage->SendFrom = "Test Fax";
     $faxMessage->Resolution = "normal";
@@ -41,7 +41,7 @@
     $faxMessage->CLI = 61011111111;
     
     $faxMessage2 = new MonopondFaxMessage();
-    $faxMessage2->MessageRef = "Testing-message-2";
+    $faxMessage2->MessageRef = "Testing-message-15";
     $faxMessage2->SendTo = "61011111111";
     $faxMessage2->SendFrom = "Test Fax 2";
     $faxMessage2->Resolution = "normal";
@@ -66,7 +66,7 @@
 
     /* Setup FaxStatusRequest */
     $faxStatusRequest = new MonopondFaxStatusRequest();
-    $faxStatusRequest->MessageRef = "test-2-1-1";
+    $faxStatusRequest->MessageRef = "Testing-message-1";
     $faxStatusRequest->Verbosity = "all";
 
     /* Send request to Monopond */
@@ -76,7 +76,7 @@
 
     /* Setup StopFaxRequest */
     $stopFaxRequest = new MonopondStopFaxRequest();
-    $stopFaxRequest->MessageRef = "test-2-2-1";
+    $stopFaxRequest->MessageRef = "Testing-message-1";
 
     /* Send request to Monopond */
     $stopFax = $client->resumeFax($stopFaxRequest);
@@ -85,7 +85,7 @@
     
     /* Setup StopFaxRequest */
     $stopFaxRequest = new MonopondStopFaxRequest();
-    $stopFaxRequest->MessageRef = "test-2-2-1";
+    $stopFaxRequest->MessageRef = "Testing-message-1";
 
     /* Send request to Monopond */
     $stopFax = $client->stopFax($stopFaxRequest);
@@ -94,17 +94,16 @@
 
     /* Setup PauseFaxRequest */
     $pauseFaxRequest = new MonopondPauseFaxRequest();
-    $pauseFaxRequest->MessageRef = "test-2-2-1";
+    $pauseFaxRequest->MessageRef = "Testing-message-1";
 
-    /* Send request to Monopond */
+     /*Send request to Monopond */
     $pauseFax = $client->pauseFax($pauseFaxRequest);
     /* Display response */
     print_r($pauseFax);
 
     /* Setup ResumeFaxRequest */
     $resumeFaxRequest = new MonopondResumeFaxRequest();
-    $resumeFaxRequest->MessageRef = "test-2-2-1";
-
+    $resumeFaxRequest->MessageRef = "Testing-message-1";
     /* Send request to Monopond */
     $resumeFax = $client->resumeFax($resumeFaxRequest);
     /* Display response */
