@@ -32,7 +32,7 @@
     
     /* Setup FaxMessages (Each contains an array of document objects) */
     $faxMessage = new MonopondFaxMessage();
-    $faxMessage->MessageRef = "Testing-message-16";
+    $faxMessage->MessageRef = "Testing-message-1";
     $faxMessage->SendTo = "61011111111";
     $faxMessage->SendFrom = "Test Fax";
     $faxMessage->Resolution = "normal";
@@ -41,7 +41,7 @@
     $faxMessage->CLI = 61011111111;
     
     $faxMessage2 = new MonopondFaxMessage();
-    $faxMessage2->MessageRef = "Testing-message-15";
+    $faxMessage2->MessageRef = "Testing-message-1";
     $faxMessage2->SendTo = "61011111111";
     $faxMessage2->SendFrom = "Test Fax 2";
     $faxMessage2->Resolution = "normal";
