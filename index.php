@@ -2,7 +2,7 @@
     include_once './MonopondSOAPClient.php';
     
     // TODO: Enter your own credentials here
-    $client = new MonopondSOAPClientV2("username", "password", MPENV::MONOPOND_PRODUCTION);
+    $client = new MonopondSOAPClientV2("username", "password", MPENV::PRODUCTION);
     
     // TODO: Put your file path here
     $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
