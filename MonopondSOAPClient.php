@@ -263,11 +263,11 @@ class MonopondSOAPClientV2 {
 		public $MessageRef;
 		public $SendTo;
 		public $SendFrom;
+		public $Documents;
 		public $Resolution;
+		public $ScheduledStartTime;
 		public $Retries;
 		public $BusyRetries;
-		public $Documents;
-		public $ScheduledStartTime;
 		public $HeaderFormat;
 		public $CLI;
 	}
@@ -353,12 +353,12 @@ class MonopondSOAPClientV2 {
 		public $BroadcastRef;
 		public $SendRef;
 		public $FaxMessages;
-		public $SendFrom;
+		public $Documents;
 		public $Resolution;
+		public $SendFrom;
+		public $ScheduledStartTime;
 		public $Retries;
 		public $BusyRetries;
-		public $Documents;
-		public $ScheduledStartTime;
 		public $HeaderFormat;
 		public $CLI;
 	}
