@@ -298,7 +298,8 @@ The Timezone is used to format the datetime display in the fax header.
 ```
 
 ### Sending Fax with Blocklist
-A request must be 
+A sample request must be similar to this following code below:
+
 ```php
 	// TODO: Put your file path here
     $filedata = fread(fopen("./test.docx", "r"), filesize("./test.docx"));
