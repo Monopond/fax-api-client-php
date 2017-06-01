@@ -252,11 +252,11 @@ class MonopondSOAPClientV2 {
 	}
 
 	class MonopondDocument {
+		public $DocumentRef;
 		public $FileName;
 		public $FileData;
 		public $Order;
 		public $DocMergeData;
-		public $DocumentRef;
 	}
 
 	class MonopondFaxMessage {
