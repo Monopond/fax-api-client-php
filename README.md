@@ -164,37 +164,6 @@ This is what the file looks like after the fields ```field1```,```field2``` and 
 
 ![stamp](https://github.com/Monopond/fax-api/raw/master/img/DocMergeData/after.png)
 
-#### Sending a single fax
-A sample code must be similar to the following request below.
-
-```php
-	// TODO: Put your file path here
-    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
-    $filedata = base64_encode($filedata);
-    
-    /* Setup Documents */
-    $document = new MonopondDocument();
-    $document->FileName = "AnyFileName1.txt";
-    $document->FileData = $filedata;
-    $document->Order = 0;
-
-    $faxMessage = new MonopondFaxMessage();
-    $faxMessage->MessageRef = "Testing-message-1";
-    $faxMessage->SendTo = "61011111111";
-
-    $sendFaxRequest = new MonopondSendFaxRequest();
-    $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
-    $sendFaxRequest->SendRef = "Send-Ref-1";
-    $sendFaxRequest->FaxMessages[] = $faxMessage;
-    $sendFaxRequest->Documents = array($document);
-
-    /* Send request to Monopond */
-    $sendRespone = $client->sendFax($sendFaxRequest);
-    /* Display response */
-    print_r($sendRespone);
-
-```
-
 ##### Sample Request
 The example below shows ```field1``` will be replaced by the value of ```Test```.
 
