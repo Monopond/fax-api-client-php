@@ -80,6 +80,33 @@ class MonopondSOAPClientV2 {
 				}
 				return $object;
 		}
+
+		private function createBlocklistElement($blocklistData) {
+
+			$dncr = $blocklistData->dncr;
+			$fps = $blocklistData->fps;
+			$smartblock = $blocklistData->smartblock;
+			$blocklist = "";
+
+			if($dncr != null || $fps != null || $smartblock != null) {
+				$blocklist = '<Blocklists ';
+
+				if($dncr != null) {
+					$blocklist .= 'dncr="'.$dncr.'" ';
+				}
+
+				if($fps != null) {
+					$blocklist .= 'fps="'.$fps.'" ';
+				}
+
+				if($smartblock != null) {
+					$blocklist .= 'smartblock="'.$smartblock.'"';
+				}
+				$blocklist .= '/>';
+			}
+
+			return $blocklist;
+		}
 		
 		public function sendFax($SendFaxRequest) {
 			$SendFaxRequest = $this->removeNullValues($SendFaxRequest);        
@@ -90,7 +117,11 @@ class MonopondSOAPClientV2 {
 				if (!empty($faxMessage->Documents)) {
 					$faxMessage->Documents = $this->convertDocumentArrayToSoapArray($faxMessage->Documents);    
 				}
-				
+
+				if($faxMessage->Blocklists != null) {
+					$blocklist = $this->createBlocklistElement($faxMessage->Blocklists);
+					$faxMessage->Blocklists = new SoapVar($blocklist, XSD_ANYXML);
+				}
 				
 				// Add SOAP ready fax message to an array of fax messages
 				$soapFaxMessages[] = new SoapVar($faxMessage,SOAP_ENC_OBJECT,null,null,"FaxMessage");
@@ -109,7 +140,6 @@ class MonopondSOAPClientV2 {
 			
 			// Make fax request SOAP ready
 			$SendFaxRequest = new SoapVar($SendFaxRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
-
 			try{
 					// Try to call send fax
 					$this->_SoapClient->SendFax($SendFaxRequest);
@@ -233,7 +263,7 @@ class MonopondSOAPClientV2 {
 
 	class MPENV {
 		const PRODUCTION = "https://api.monopond.com/fax/soap/v2.1/?wsdl";
-		const PRODUCTION_BETA = "https://beta.monopond.com/api/fax/v2.1?wsdl";
+		const PRODUCTION_BETA = "https://stagingbeta.monopond.com/api/fax/v2.1?wsdl";
 		const TEST = "http://test.api.monopond.com/fax/soap/v2.1/?wsdl";
 		const LOCAL = "http://localhost:8000/fax/soap/v2.1?wsdl";
 	}
@@ -264,12 +294,22 @@ class MonopondSOAPClientV2 {
 		public $SendTo;
 		public $SendFrom;
 		public $Resolution;
+		public $Blocklists;
 		public $Retries;
 		public $BusyRetries;
 		public $Documents;
 		public $ScheduledStartTime;
+		public $MustBeSentBeforeDate;
 		public $HeaderFormat;
+		public $MaxFaxPages;
 		public $CLI;
+		public $TimeZone;
+	}
+
+	class MonopondBlocklist {
+		public $dncr = "false";
+		public $fps = "false";
+		public $smartblock = "false";
 	}
 
 	class MonopondFaxDetailsResponse {
@@ -359,8 +399,11 @@ class MonopondSOAPClientV2 {
 		public $BusyRetries;
 		public $Documents;
 		public $ScheduledStartTime;
+		public $MustBeSentBeforeDate;
 		public $HeaderFormat;
+		public $MaxFaxPages;
 		public $CLI;
+		public $TimeZone;
 	}
 
 	class MonopondSendFaxResponse{   
