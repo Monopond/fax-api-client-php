@@ -291,6 +291,7 @@ class MonopondSOAPClientV2 {
 		public $FileName;
 		public $FileData;
 		public $Order;
+		public $DitheringTechnique;
 		public $DocMergeData;
 	}
 
