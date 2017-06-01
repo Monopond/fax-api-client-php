@@ -126,6 +126,11 @@ class MonopondSOAPClientV2 {
 				// Add SOAP ready fax message to an array of fax messages
 				$soapFaxMessages[] = new SoapVar($faxMessage,SOAP_ENC_OBJECT,null,null,"FaxMessage");
 			}
+
+			if($SendFaxRequest->Blocklists != null) {
+				$blocklist = $this->createBlocklistElement($SendFaxRequest->Blocklists);
+				$SendFaxRequest->Blocklists = new SoapVar($blocklist, XSD_ANYXML);
+			}
 			
 			// Make fax messages array SOAP ready
 			$soapFaxMessages = new SoapVar($soapFaxMessages,SOAP_ENC_OBJECT);
@@ -263,7 +268,7 @@ class MonopondSOAPClientV2 {
 
 	class MPENV {
 		const PRODUCTION = "https://api.monopond.com/fax/soap/v2.1/?wsdl";
-		const PRODUCTION_BETA = "https://stagingbeta.monopond.com/api/fax/v2.1?wsdl";
+		const PRODUCTION_BETA = "https://beta.monopond.com/api/fax/v2.1?wsdl";
 		const TEST = "http://test.api.monopond.com/fax/soap/v2.1/?wsdl";
 		const LOCAL = "http://localhost:8000/fax/soap/v2.1?wsdl";
 	}
@@ -293,14 +298,14 @@ class MonopondSOAPClientV2 {
 		public $MessageRef;
 		public $SendTo;
 		public $SendFrom;
+		public $Documents;
 		public $Resolution;
 		public $Blocklists;
+		public $ScheduledStartTime;
 		public $Retries;
 		public $BusyRetries;
-		public $Documents;
-		public $ScheduledStartTime;
-		public $MustBeSentBeforeDate;
 		public $HeaderFormat;
+		public $MustBeSentBeforeDate;
 		public $MaxFaxPages;
 		public $CLI;
 		public $TimeZone;
@@ -393,14 +398,15 @@ class MonopondSOAPClientV2 {
 		public $BroadcastRef;
 		public $SendRef;
 		public $FaxMessages;
-		public $SendFrom;
+		public $Documents;
 		public $Resolution;
+		public $Blocklists;
+		public $SendFrom;
+		public $ScheduledStartTime;
 		public $Retries;
 		public $BusyRetries;
-		public $Documents;
-		public $ScheduledStartTime;
-		public $MustBeSentBeforeDate;
 		public $HeaderFormat;
+		public $MustBeSentBeforeDate;
 		public $MaxFaxPages;
 		public $CLI;
 		public $TimeZone;
