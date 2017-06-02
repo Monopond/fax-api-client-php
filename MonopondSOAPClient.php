@@ -48,6 +48,10 @@ class MonopondSOAPClientV2 {
 					$document = $this->removeNullValues($document);
 				}
 
+				if(!$document->DitheringTechnique) {
+					$document = $this->removeNullValues($document);
+				}
+
 				if(!empty($document->DocMergeData)) {
 					$document->DocMergeData = $this->convertMergeFieldArrayToSoapArray($document->DocMergeData);
 				}
@@ -291,7 +295,7 @@ class MonopondSOAPClientV2 {
 		public $FileName;
 		public $FileData;
 		public $Order;
-		public $DitheringTechnique="normal";
+		public $DitheringTechnique;
 		public $DocMergeData;
 	}
 
@@ -313,9 +317,9 @@ class MonopondSOAPClientV2 {
 	}
 
 	class MonopondBlocklist {
-		public $dncr = "false";
-		public $fps = "false";
-		public $smartblock = "false";
+		public $dncr;
+		public $fps;
+		public $smartblock;
 	}
 
 	class MonopondFaxDetailsResponse {
