@@ -1,13 +1,13 @@
 
 <?php
 
-class MonopondSOAPClientV2 {
+	class MonopondSOAPClientV2 {
 		private $_username;
 		private $_password;
 		private $_wsdl;
 		private $_SoapClient;
 		private $_strWSSENS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
-		
+			
 		function __construct($username, $password, $wsdl) {
 			// Setup monopond API credentials
 			$this->_username=$username;
@@ -27,14 +27,14 @@ class MonopondSOAPClientV2 {
 		        'verify_peer' => false,
 		        'verify_peer_name' => false,
 		        'allow_self_signed' => true
-       		 	)
+	   		 	)
 			));
 
 			// Creating the SOAP client 
 			$this->_SoapClient = new SoapClient($this->_wsdl, array("trace" => 1, "stream_context" => $context));
 			$this->_SoapClient->__setSoapHeaders(array($SoapHeader));
 		}
-		
+			
 		private function convertDocumentArrayToSoapArray($documentArray) {
 			// Initialise a blank array
 			$soapDocuments = array();
@@ -69,14 +69,9 @@ class MonopondSOAPClientV2 {
 					$documentXmlString .= $this->convertMergeFieldArrayToSoapString($document->DocMergeData);
 				}
 
-
 				$documentXmlString .= '</Document>';
 				$soapDocument = new SoapVar($documentXmlString , XSD_ANYXML);
-
-
 				$soapDocuments[] = $soapDocument;
-
-
 			}
 
 			// Make documents array SOAP ready
@@ -103,12 +98,12 @@ class MonopondSOAPClientV2 {
 		}
 
 		private function removeNullValues($object) {
-				foreach($object as $key => $value) {
-						if (!isset($value)) {
-								unset($object->$key);
-						}
-				}
-				return $object;
+			foreach($object as $key => $value) {
+					if (!isset($value)) {
+							unset($object->$key);
+					}
+			}
+			return $object;
 		}
 
 		private function createBlocklistElement($blocklistData) {
@@ -137,7 +132,7 @@ class MonopondSOAPClientV2 {
 
 			return $blocklist;
 		}
-		
+			
 		public function sendFax($SendFaxRequest) {
 			$SendFaxRequest = $this->removeNullValues($SendFaxRequest);        
 			
@@ -185,10 +180,8 @@ class MonopondSOAPClientV2 {
 				 // print_r($this->_SoapClient->__getLastRequest());
 			}
 
-
 			// Uncomment the line below to print the XML of the request just made  
 			// print_r($this->_SoapClient->__getLastResponse());
-
 
 			$XMLResponseString = $this->_SoapClient->__getLastResponse();
 			$XMLResponseString = str_replace("soap:", "", $XMLResponseString);
@@ -200,7 +193,7 @@ class MonopondSOAPClientV2 {
 
 			return new MonopondSendFaxResponse($messagesResponses);
 		}
-		
+			
 		public function faxStatus($faxStatusRequest) {
 			$faxStatusRequest = $this->removeNullValues($faxStatusRequest);
 			$faxStatusRequest = new SoapVar($faxStatusRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
@@ -461,12 +454,10 @@ class MonopondSOAPClientV2 {
 		public $Verbosity = "brief";
 	}
 
-
 	class MonopondFaxStatusResponse {
 		public $FaxStatusTotals;
 		public $FaxResultsTotals;
 		public $FaxMessages;
-
 
 		function __construct($response) {
 			$this->FaxStatusTotals = new MonopondFaxStatusTotalsResponse($response->FaxStatusTotals);
