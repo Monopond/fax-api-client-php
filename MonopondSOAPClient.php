@@ -52,10 +52,31 @@ class MonopondSOAPClientV2 {
 					$document = $this->removeNullValues($document);
 				}
 
-				if(!empty($document->DocMergeData)) {
-					$document->DocMergeData = $this->convertMergeFieldArrayToSoapArray($document->DocMergeData);
+				$documentXmlString = '<Document>';
+				if($document->DocumentRef != null) {
+					$documentXmlString .= '<DocumentRef>'.$document->DocumentRef.'</DocumentRef>';
 				}
-				$soapDocuments[] = new SoapVar($document, SOAP_ENC_OBJECT,null,null,"Document");
+
+				$documentXmlString .= '<FileName>'.$document->FileName.'</FileName>';
+				$documentXmlString .= '<FileData>'.$document->FileData.'</FileData>';
+				$documentXmlString .= '<Order>'.$document->Order.'</Order>';
+
+				if($document->DitheringTechnique != null) {
+					$documentXmlString .= '<DitheringTechnique>'.$document->DitheringTechnique.'</DitheringTechnique>';
+				}
+
+				if(!empty($document->DocMergeData)) {
+					$documentXmlString .= $this->convertMergeFieldArrayToSoapString($document->DocMergeData);
+				}
+
+
+				$documentXmlString .= '</Document>';
+				$soapDocument = new SoapVar($documentXmlString , XSD_ANYXML);
+
+
+				$soapDocuments[] = $soapDocument;
+
+
 			}
 
 			// Make documents array SOAP ready
@@ -64,16 +85,21 @@ class MonopondSOAPClientV2 {
 			return $soapDocuments;
 		}
 
-		private function convertMergeFieldArrayToSoapArray($mergeFieldArray) {
-			$soapMergeFields = array();
-
+		private function convertMergeFieldArrayToSoapString($mergeFieldArray) {
+			$DocMergeDataString = '';
+			
 			foreach ($mergeFieldArray as $mergeField) {
-				$soapMergeFields[] = new SoapVar($mergeField, SOAP_ENC_OBJECT, null, null, "MergeField");
+				$DocMergeDataString .= '<DocMergeData>';
+				if($mergeField->Key != null || $mergeField->Value != null) {
+					$DocMergeDataString .= '<MergeField>';
+					$DocMergeDataString .= '<Key>'.$mergeField->Key.'</Key>';
+					$DocMergeDataString .= '<Value>'.$mergeField->Value.'</Value>';
+					$DocMergeDataString .= '</MergeField>';
+				}
+				$DocMergeDataString .= '</DocMergeData>';
 			}
 
-			$soapMergeFields = new SoapVar($soapMergeFields, SOAP_ENC_OBJECT);
-
-			return $soapMergeFields;
+			return $DocMergeDataString;
 		}
 
 		private function removeNullValues($object) {
@@ -153,15 +179,15 @@ class MonopondSOAPClientV2 {
 					// Try to call send fax
 					$this->_SoapClient->SendFax($SendFaxRequest);
 			}catch (SoapFault $exception) {
-					// Print exception if one occured
-					print_r($exception->getMessage());
-					// Uncomment the line below to print the XML of the request just made  
-					//print_r($this->_SoapClient->__getLastRequest());
+				// Print exception if one occured
+				//print_r($exception->getMessage());
+				// Uncomment the line below to print the XML of the request just made  
+				// print_r($this->_SoapClient->__getLastRequest());
 			}
 
 
 			// Uncomment the line below to print the XML of the request just made  
-			//print_r($this->_SoapClient->__getLastResponse());
+			// print_r($this->_SoapClient->__getLastResponse());
 
 
 			$XMLResponseString = $this->_SoapClient->__getLastResponse();
@@ -429,9 +455,9 @@ class MonopondSOAPClientV2 {
 
 	/* FaxStatus */
 	class MonopondFaxStatusRequest {
-		public $BroadcastRef;
-		public $SendRef;
 		public $MessageRef;
+		public $SendRef;
+		public $BroadcastRef;
 		public $Verbosity = "brief";
 	}
 
