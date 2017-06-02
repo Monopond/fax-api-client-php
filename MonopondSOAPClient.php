@@ -182,7 +182,7 @@ class MonopondSOAPClientV2 {
 				// Print exception if one occured
 				print_r($exception->getMessage());
 				// Uncomment the line below to print the XML of the request just made  
-				// print_r($this->_SoapClient->__getLastRequest());
+				 // print_r($this->_SoapClient->__getLastRequest());
 			}
 
 
@@ -528,9 +528,9 @@ class MonopondSOAPClientV2 {
 
 	/* StopFax */
 	class MonopondStopFaxRequest {
-		public $BroadcastRef;
-		public $SendRef;
 		public $MessageRef;
+		public $SendRef;
+		public $BroadcastRef;
 	}
 
 	class MonopondStopFaxResponse {
@@ -545,9 +545,9 @@ class MonopondSOAPClientV2 {
 
 	/* PauseFax */
 	class MonopondPauseFaxRequest {
-		public $BroadcastRef;
-		public $SendRef;
 		public $MessageRef;
+		public $SendRef;
+		public $BroadcastRef;
 	}
 
 	class MonopondPauseFaxResponse {
@@ -562,9 +562,9 @@ class MonopondSOAPClientV2 {
 
 	/* ResumeFax */
 	class MonopondResumeFaxRequest {
-		public $BroadcastRef;
-		public $SendRef;
 		public $MessageRef;
+		public $SendRef;
+		public $BroadcastRef;
 	}
 
 	class MonopondResumeFaxResponse {
