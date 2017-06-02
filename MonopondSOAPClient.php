@@ -180,7 +180,7 @@ class MonopondSOAPClientV2 {
 					$this->_SoapClient->SendFax($SendFaxRequest);
 			}catch (SoapFault $exception) {
 				// Print exception if one occured
-				//print_r($exception->getMessage());
+				print_r($exception->getMessage());
 				// Uncomment the line below to print the XML of the request just made  
 				// print_r($this->_SoapClient->__getLastRequest());
 			}
