@@ -27,37 +27,29 @@ Your specific faxing requirements will dictate which send request type below sho
 To send a fax to a single destination a request similar to the following example can be used:
 
 ```php
-// TODO: Put your file path here
- $filedata = fread(fopen("./test.txt", "r"), filesize("./test.txt"));
- $filedata = base64_encode($filedata);
- 
- // TODO: Setup Document
- $document = new MonopondDocument();
- $document->FileName = "AnyFileName1.txt";
- $document->FileData = $filedata;
- $document->Order = 0;
- 
- // TODO: Setup FaxMessage
- $faxMessage = new MonopondFaxMessage();
- $faxMessage->MessageRef = "Testing-message-1";
- $faxMessage->SendTo = "61011111111";
- $faxMessage->SendFrom = "Test Fax";
- $faxMessage->Documents = array($document);
- $faxMessage->Resolution = "normal";
- $faxMessage->Retries = 0;
- $faxMessage->BusyRetries = 2;
- $faxMessage->CLI = 123456;
- 
- // TODO: Setup FaxSendRequest 
- $sendFaxRequest = new MonopondSendFaxRequest();
- $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
- $sendFaxRequest->SendRef = "Send-Ref-1";
- $sendFaxRequest->FaxMessages[] = $faxMessage;
- $sendFaxRequest->CLI = 65432;
+	// TODO: Put your file path here
+	$filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+	$filedata = base64_encode($filedata);
+    
+	// TODO: Setup Document
+	$document = new MonopondDocument();
+	$document->FileName = "AnyFileName1.txt";
+	$document->FileData = $filedata;
+	$document->Order = 0;
+     
+	// TODO: Setup FaxMessage
+	$faxMessage = new MonopondFaxMessage();
+	$faxMessage->MessageRef = "Testing-message-1";
+	$faxMessage->SendTo = "61011111111";
+	$faxMessage->Documents = array($document);
+     
+	// TODO: Setup FaxSendRequest 
+	$sendFaxRequest = new MonopondSendFaxRequest();
+	$sendFaxRequest->FaxMessages[] = $faxMessage;
 
- // Call send fax method
- $sendRespone = $client->sendFax($sendFaxRequest);
- print_r($sendRespone);
+	// Call send fax method
+	$sendRespone = $client->sendFax($sendFaxRequest);
+	print_r($sendRespone);
 ```
 
 ### Sending multiple faxes:
