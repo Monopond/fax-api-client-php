@@ -54,7 +54,7 @@ To send a fax to a single destination a request similar to the following example
 You can visit the following properties of MonopondDocument, MonopondFaxMessage, and MonopondSendFaxRequest to know there definitions:
 * [MonopondDocument Properties](#monoponddocument-properties)
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
-* [MonopondSendFaxRequest Properties](#monopondsendfaxfequest-properties)
+* [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
 
 ### Sending multiple faxes:
