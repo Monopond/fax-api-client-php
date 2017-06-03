@@ -417,6 +417,71 @@ To send fax with SendFrom in MonopondSendFaxRequest a request similar to the fol
 You can visit the definition of SendFrom here:
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
+### Assigning a HeaderFormat in MonopondFaxMessage
+Allows the header format that appears at the top of the transmitted fax to be changed.
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    $faxMessage->HeaderFormat = "From %from%, To %to%|%a %b %d %H:%M %Y";
+    
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+    $sendFaxRequest->Documents = array($document);
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+
+```
+For more information, visit the following on how to setup the HeaderFormat value:
+* [Header Format](#header-format)
+
+### Assigning a HeaderFormat in MonopondSendFaxRequest
+Allows the header format that appears at the top of the transmitted fax to be changed.
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+    $sendFaxRequest->Documents = array($document);
+    $sendFaxRequest->HeaderFormat = "From %from%, To %to%|%a %b %d %H:%M %Y";
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+```
+
+For more information, visit the following on how to setup the HeaderFormat value:
+* [Header Format](#header-format)
 
 ### Sending multiple faxes:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
@@ -755,37 +820,6 @@ The example below shows a PDF that will be stamped with the text “Hello” at 
 ```php
 	TODO: code here  
 ```
-
-***Header Format:iff***
-Determines the format of the header line that is printed on the top of the transmitted fax message.
-This is set to **rom %from%, To %to%|%a %b %d %H:%M %Y”**y default which produces the following:
-
-From TSID, To 61022221234 Mon Aug 28 15:32 2012 1 of 1
-
-**Value** | **Description**
---- | ---
-**%from%**|The value of the **SendFrom** field in the message.
-**%to%**|The value of the **SendTo** field in the message.
-**%a**|Weekday name (abbreviated)
-**%A**|Weekday name
-**%b**|Month name (abbreviated)
-**%B**|Month name
-**%d**|Day of the month as a decimal (01 – 31)
-**%m**|Month as a decimal (01 – 12)
-**%y**|Year as a decimal (abbreviated)
-**%Y**|Year as a decimal
-**%H**|Hour as a decimal using a 24-hour clock (00 – 23)
-**%I**|Hour as a decimal using a 12-hour clock (01 – 12)
-**%M**|Minute as a decimal (00 – 59)
-**%S**|Second as a decimal (00 – 59)
-**%p**|AM or PM
-**%j**|Day of the year as a decimal (001 – 366)
-**%U**|Week of the year as a decimal (Monday as first day of the week) (00 – 53)
-**%W**|Day of the year as a decimal (001 – 366)
-**%w**|Day of the week as a decimal (0 – 6) (Sunday being 0)
-**%%**|A literal % character
-
-TODO: The default value is set to: “From %from%, To %to%|%a %b %d %H:%M %Y”
 
 <a name="docMergeDataParameters"></a> 
 
@@ -1365,3 +1399,34 @@ Represents a fax document to be sent through the system. Supported file types ar
 | **lighten_more** | Lighten more dithering. |
 | **crosshatch** | Crosshatch dithering. |
 | **DETAILED** | Detailed dithering. |
+
+### Header Format
+Determines the format of the header line that is printed on the top of the transmitted fax message.
+This is set to **rom %from%, To %to%|%a %b %d %H:%M %Y”**y default which produces the following:
+
+From TSID, To 61022221234 Mon Aug 28 15:32 2012 1 of 1
+
+**Value** | **Description**
+--- | ---
+**%from%**|The value of the **SendFrom** field in the message.
+**%to%**|The value of the **SendTo** field in the message.
+**%a**|Weekday name (abbreviated)
+**%A**|Weekday name
+**%b**|Month name (abbreviated)
+**%B**|Month name
+**%d**|Day of the month as a decimal (01 – 31)
+**%m**|Month as a decimal (01 – 12)
+**%y**|Year as a decimal (abbreviated)
+**%Y**|Year as a decimal
+**%H**|Hour as a decimal using a 24-hour clock (00 – 23)
+**%I**|Hour as a decimal using a 12-hour clock (01 – 12)
+**%M**|Minute as a decimal (00 – 59)
+**%S**|Second as a decimal (00 – 59)
+**%p**|AM or PM
+**%j**|Day of the year as a decimal (001 – 366)
+**%U**|Week of the year as a decimal (Monday as first day of the week) (00 – 53)
+**%W**|Day of the year as a decimal (001 – 366)
+**%w**|Day of the week as a decimal (0 – 6) (Sunday being 0)
+**%%**|A literal % character
+
+TODO: The default value is set to: “From %from%, To %to%|%a %b %d %H:%M %Y”
