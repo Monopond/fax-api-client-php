@@ -888,58 +888,56 @@ To set a MaxFaxPages for MonopondSendFaxRequest, a request similar to the follow
 To know more about MaxFaxPages you can check it here:
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
-
 ### Sending multiple faxes:
-To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
+To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another `FaxMessage`:
 
 ```php
-// TODO: Put your file path here
- $filedata = fread(fopen("./test.txt", "r"), filesize("./test.txt"));
- $filedata = base64_encode($filedata);
- 
- // TODO: Setup Document
- $document = new MonopondDocument();
- $document->FileName = "AnyFileName1.txt";
- $document->FileData = $filedata;
- $document->Order = 0;
- $document2 = new MonopondDocument();
- $document2->FileName = "AnyFileName2.txt";
- $document2->FileData = $filedata;
- $document2->Order = 0;
- 
- $document3 = new MonopondDocument();
- $document3->FileName = "AnyFileName3.txt";
- $document3->FileData = $filedata;
- $document3->Order = 0;
- 
- // TODO: Setup FaxMessage
- $faxMessage = new MonopondFaxMessage();
- $faxMessage->MessageRef = "Testing-message-1";
- $faxMessage->SendTo = "61011111111";
- $faxMessage->SendFrom = "Test Fax";
- $faxMessage->Documents = array($document);
- $faxMessage->Resolution = "normal";
- $faxMessage->Retries = 0;
- $faxMessage->BusyRetries = 2;
- $faxMessage2 = new MonopondFaxMessage();
- $faxMessage2->MessageRef = "Testing-message-2";
- $faxMessage2->SendTo = "61011111111";
- $faxMessage2->SendFrom = "Test Fax 2";
- $faxMessage2->Documents = array($document $document3);
- $faxMessage2->Resolution = "normal";
- $faxMessage2->Retries = 0;
- $faxMessage2->BusyRetries = 3;
- // TODO: Setup FaxSendRequest 
- $sendFaxRequest = new MonopondSendFaxRequest();
- $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
- $sendFaxRequest->SendRef = "Send-Ref-1";
- $sendFaxRequest->FaxMessages[] = $faxMessage;
- $sendFaxRequest->FaxMessages[] = $faxMessage2;
- 
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
 
- // Call send fax method
- $sendRespone = $client->sendFax($sendFaxRequest);
- print_r($sendRespone);
+    $document2 = new MonopondDocument();
+    $document2->FileName = "AnyFileName2.txt";
+    $document2->FileData = $filedata;
+    $document2->Order = 0;
+
+    $document3 = new MonopondDocument();
+    $document3->FileName = "AnyFileName3.txt";
+    $document3->FileData = $filedata;
+    $document3->Order = 0;
+
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    $faxMessage->Documents = $document;
+
+    $faxMessage2 = new MonopondFaxMessage();
+    $faxMessage2->MessageRef = "Testing-message-2";
+    $faxMessage2->SendTo = "61011111112";
+    $faxMessage2->Documents = $document2;
+
+    $faxMessage3 = new MonopondFaxMessage();
+    $faxMessage3->MessageRef = "Testing-message-3";
+    $faxMessage3->SendTo = "61011111112";
+    $faxMessage3->Documents = $document3;
+
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages = array($faxMessage, $faxMessage2, $faxMessage3);
+    $sendFaxRequest->Documents = array($document);
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+
 ```
 
 ### Sending faxes to multiple destinations with the same document (broadcasting):
