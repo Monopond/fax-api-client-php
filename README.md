@@ -74,7 +74,7 @@ DocumentRef must be unique and a request must be similar to this example:
     $document2->FileName = "AnyFileName1.txt";
     $document2->FileData = $filedata;
     $document2->Order = 0;
-    $document->DocumentRef = "Sample DocumentRef2";
+    $document2->DocumentRef = "Sample DocumentRef2";
 
     /* Setup FaxMessages (Each contains an array of document objects) */
     $faxMessage = new MonopondFaxMessage();
