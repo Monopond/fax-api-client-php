@@ -51,7 +51,7 @@ To send a fax to a single destination a request similar to the following example
 	$sendRespone = $client->sendFax($sendFaxRequest);
 	print_r($sendRespone);
 ```
-You can visit the following properties of MonopondDocument, MonopondFaxMessage, and MonopondSendFaxRequest to know there definitions:
+You can visit the following properties of MonopondDocument, MonopondFaxMessage, and MonopondSendFaxRequest to know the definitions:
 * [MonopondDocument Properties](#monoponddocument-properties)
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
