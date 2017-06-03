@@ -263,6 +263,39 @@ You can visit the definition of Resolution and its values here:
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 * [Resolution Levels](#resolution-levels)
 
+### Sending a Fax with FaxDitheringTechnique in MonopondDocument:
+To set the fax FaxDitheringTechnique, a request similar to the following example can be used.
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    $document->DitheringTechnique = "turbo";
+    
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+    $sendFaxRequest->Documents = array($document);
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+
+```
+You can visit the different values of FaxDitheringTechnique here:
+* [FaxDitheringtechniques](#faxditheringtechniques
+
 ### Sending multiple faxes:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
 
@@ -1059,29 +1092,6 @@ TODO: code here
 |**fileName** |  | *String* | The document filename including extension. This is important as it is used to help identify the document MIME type. |
 |**fileData** |  | *Base64* | The document encoded in Base64 format. |
 
-**FaxDitheringTechnique:**
-
-| Value | Fax Dithering Technique |
-| --- | --- |
-| **none** | No dithering. |
-| **normal** | Normal dithering.|
-| **turbo** | Turbo dithering.|
-| **darken** | Darken dithering.|
-| **darken_more** | Darken more dithering.|
-| **darken_extra** | Darken extra dithering.|
-| **lighten** | Lighten dithering.|
-| **lighten_more** | Lighten more dithering. |
-| **crosshatch** | Crosshatch dithering. |
-| **DETAILED** | Detailed dithering. |
-
-**Resolution Levels:**
-
-| **Value** | **Description** |
-| --- | --- |
-| **normal** | Normal standard resolution (98 scan lines per inch) |
-| **fine** | Fine resolution (196 scan lines per inch) |
-
-### Response
 **FaxDocumentPreviewResponse**
 
 **Name** | **Type** | **Description** 
@@ -1218,3 +1228,18 @@ Represents a fax document to be sent through the system. Supported file types ar
 | --- | --- |
 | **normal** | Normal standard resolution (98 scan lines per inch) |
 | **fine** | Fine resolution (196 scan lines per inch) |
+
+### FaxDitheringTechnique
+
+| Value | Fax Dithering Technique |
+| --- | --- |
+| **none** | No dithering. |
+| **normal** | Normal dithering.|
+| **turbo** | Turbo dithering.|
+| **darken** | Darken dithering.|
+| **darken_more** | Darken more dithering.|
+| **darken_extra** | Darken extra dithering.|
+| **lighten** | Lighten dithering.|
+| **lighten_more** | Lighten more dithering. |
+| **crosshatch** | Crosshatch dithering. |
+| **DETAILED** | Detailed dithering. |
