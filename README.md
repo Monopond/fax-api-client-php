@@ -193,6 +193,41 @@ You can visit the following properties of MonopondDocument, MonopondFaxMessage, 
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
+### Sending a Fax with Resolution in FaxMessage
+To assign the fax resolution, a request similar to the following example can be used.
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    $faxMessage->Resolution = "normal";
+    
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+    $sendFaxRequest->Documents = array($document);
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+
+```
+You can visit the definition of Resolution and its values here:
+* [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
+* [Resolution Levels](#resolution-levels)
+
+
 ### Sending multiple faxes:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
 
@@ -530,16 +565,6 @@ The example below shows a PDF that will be stamped with the text “Hello” at 
 ```php
 	TODO: code here  
 ```
-
-
-
-
-***Resolution Levels:***
-
-| **Value** | **Description** |
-| --- | --- |
-| **normal** | Normal standard resolution (98 scan lines per inch) |
-| **fine** | Fine resolution (196 scan lines per inch) |
 
 ***Header Format:iff***
 Determines the format of the header line that is printed on the top of the transmitted fax message.
@@ -1151,3 +1176,10 @@ Represents a fax document to be sent through the system. Supported file types ar
 **Order** |**X** | Integer|If multiple documents are defined on a message this value will determine the order in which they will be transmitted.|0|
 **DocMergeData**|||An Array of MergeFields|
 **StampMergeData**|||An Array of MergeFields|
+
+### Resolution Levels
+
+| **Value** | **Description** |
+| --- | --- |
+| **normal** | Normal standard resolution (98 scan lines per inch) |
+| **fine** | Fine resolution (196 scan lines per inch) |
