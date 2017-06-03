@@ -56,7 +56,7 @@ You can visit the following properties of MonopondDocument, MonopondFaxMessage, 
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
-### Sending a Fax with Retries inside a FaxMessage
+### Sending a Fax with Retries inside a MonopondFaxMessage
 To set-up a fax to have retries a request similar to the following example can be used.
 
 ```php
@@ -91,7 +91,7 @@ You can visit the following properties of MonopondDocument, MonopondFaxMessage, 
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
-### Sending a Fax with Retries inside a SendFaxRequest
+### Sending a Fax with Retries inside a MonopondSendFaxRequest
 To set-up a fax to have retries a request similar to the following example can be used.
 ```php
     // TODO: Put your file path here
@@ -125,7 +125,7 @@ You can visit the following properties of MonopondDocument, MonopondFaxMessage, 
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
-### Sending a Fax with BusyRetries inside a FaxMessage
+### Sending a Fax with BusyRetries inside a MonopondFaxMessage
 To set-up a fax to have busyRetries a request similar to the following example can be used.
 ```php
     // TODO: Put your file path here
@@ -159,7 +159,7 @@ You can visit the following properties of MonopondDocument, MonopondFaxMessage, 
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
-### Sending a Fax with BusyRetries inside a SendFaxRequest
+### Sending a Fax with BusyRetries inside a MonopondSendFaxRequest
 To set-up a fax to have busyRetries a request similar to the following example can be used.
 ```php
     // TODO: Put your file path here
@@ -193,7 +193,7 @@ You can visit the following properties of MonopondDocument, MonopondFaxMessage, 
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
-### Sending a Fax with Resolution in FaxMessage
+### Sending a Fax with Resolution in MonopondFaxMessage
 To assign the fax resolution, a request similar to the following example can be used.
 ```php
     // TODO: Put your file path here
@@ -227,6 +227,41 @@ You can visit the definition of Resolution and its values here:
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [Resolution Levels](#resolution-levels)
 
+### Sending a Fax with Resolution in MonopondSendFaxRequest
+To assign the fax resolution, a request similar to the following example can be used.
+```php
+	// TODO: Enter your own credentials here
+    $client = new MonopondSOAPClientV2("monoponduser", "synacy22", MPENV::PRODUCTION_BETA);
+    
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+    $sendFaxRequest->Documents = array($document);
+    $sendFaxRequest->Resolution = "fine";
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+```
+You can visit the definition of Resolution and its values here:
+* [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
+* [Resolution Levels](#resolution-levels)
 
 ### Sending multiple faxes:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
