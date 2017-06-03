@@ -294,7 +294,7 @@ To set the fax FaxDitheringTechnique, a request similar to the following example
 
 ```
 You can visit the different values of FaxDitheringTechnique here:
-* [FaxDitheringtechniques](#faxditheringtechniques)
+* [FaxDitheringTechniques](#faxditheringtechnique)
 
 ### Sending multiple faxes:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
