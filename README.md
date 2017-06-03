@@ -892,11 +892,8 @@ To know more about MaxFaxPages you can check it here:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another `FaxMessage`:
 
 ```php
-    // TODO: Enter your own credentials here
-    $client = new MonopondSOAPClientV2("monoponduser", "synacy22", MPENV::PRODUCTION_BETA);
-    
     // TODO: Put your file path here
-    $filedata = fread(fopen("tests/hello.txt", "r"), filesize("tests/hello.txt"));
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
     $filedata = base64_encode($filedata);
     
     /* Setup Documents */
