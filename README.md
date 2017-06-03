@@ -102,6 +102,39 @@ DocumentRef must be unique and a request must be similar to this example:
 You can visit here to check the definition of DocumentRef:
 * [MonopondDocument Properties](#monoponddocument-properties)
 
+### Assigning SendRef and BroadcastRef in MonopondSendFaxRequest
+To assign SendRef and BroadcastRef in MonopondSendFaxRequest, a request must be similar to this example:
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "Testing";
+
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+    $sendFaxRequest->Documents = array($document);
+    $sendFaxRequest->BroadcastRef = "BroadcastRef";
+    $sendFaxRequest->SendRef = "SendRef";
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+ ```
+Visit here to know the definitions of SendRef and BroadcastRef:
+* [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
+
 ### Sending a Fax with Retries inside a MonopondFaxMessage
 To set-up a fax to have retries a request similar to the following example can be used.
 
