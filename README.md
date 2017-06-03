@@ -947,34 +947,43 @@ This method is recommended for broadcasting as it takes advantage of the multipl
 When sending multiple faxes in batch it is recommended to group them into requests of around 600 fax messages for optimal performance. If you are sending the same document to multiple destinations it is strongly advised to only attach the document once in the root of the send request rather than attaching a document for each destination.
 
 ```php
- // TODO: Put your file path here
- $filedata = fread(fopen("./test.txt", "r"), filesize("./test.txt"));
- $filedata = base64_encode($filedata);
- 
- // TODO: Setup Document
- $document = new MonopondDocument();
- $document->FileName = "AnyFileName1.txt";
- $document->FileData = $filedata;
- $document->Order = 0;
- 
- // TODO: Setup FaxMessage
- $faxMessage = new MonopondFaxMessage();
- $faxMessage->MessageRef = "Testing-message-1";
- $faxMessage->SendTo = "61011111111";
- $faxMessage2 = new MonopondFaxMessage();
- $faxMessage2->MessageRef = "Testing-message-2";
- $faxMessage2->SendTo = "61011111111";
- // TODO: Setup FaxSendRequest 
- $sendFaxRequest = new MonopondSendFaxRequest();
- $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
- $sendFaxRequest->SendRef = "Send-Ref-1";
- $sendFaxRequest->FaxMessages[] = $faxMessage;
- $sendFaxRequest->FaxMessages[] = $faxMessage2;
- $sendFaxRequest->Documents = array($document);
- $sendFaxRequest->SendFrom = "Test Fax";
- // Call send fax method
- $sendRespone = $client->sendFax($sendFaxRequest);
- print_r($sendRespone);
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+
+    $document2 = new MonopondDocument();
+    $document2->FileName = "AnyFileName1.txt";
+    $document2->FileData = $filedata;
+    $document2->Order = 0;
+
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+
+    $faxMessage2 = new MonopondFaxMessage();
+    $faxMessage2->MessageRef = "Testing-message-2";
+    $faxMessage2->SendTo = "61011111112";
+
+    $faxMessage3 = new MonopondFaxMessage();
+    $faxMessage3->MessageRef = "Testing-message-3";
+    $faxMessage3->SendTo = "61011111112";
+
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages = array($faxMessage, $faxMessage2, $faxMessage3);
+    $sendFaxRequest->Documents = array($document, $document2);
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
 ```
 
 ### Sending Microsoft Documents With DocMergeData:
