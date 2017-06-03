@@ -628,6 +628,44 @@ You can visit here the definition of Blocklists and its paremeters:
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [Blocklists Parameters](#blocklists-parameters);
 
+### Add a Blocklists in MonopondSendFaxRequest
+If you want to validate all numbers in DNCR or FPS or Smarblock, a request must be similiar to this example:
+
+```php
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    
+    /* Setup Blocklists */
+    $monopondBlocklists = new MonopondBlocklist();
+    $monopondBlocklists->dncr = "true";
+
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+
+    $faxMessage2 = new MonopondFaxMessage();
+    $faxMessage2->MessageRef = "Testing-message-2";
+    $faxMessage2->SendTo = "61011111112";
+
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages = array($faxMessage, $faxMessage2);
+    $sendFaxRequest->Documents = array($document);
+    $sendFaxRequest->Blocklists = $monopondBlocklists;
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+```
+You can visit here the definition of Blocklists and its paremeters:
+* [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
+* [Blocklists Parameters](#blocklists-parameters);
+
 ### Sending multiple faxes:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
 
