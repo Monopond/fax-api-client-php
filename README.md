@@ -515,6 +515,119 @@ Assigning a CLI in the MonopondFaxMessage, a request similar to the following ex
 You can visit the definition of CLI here:
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 
+### Sending a Fax with DNCR enabled in MonopondFaxMessage
+To check if a number is on the Do Not Call Register (Australian) before the fax is sent:
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    
+    /* Setup Blocklists */
+    $monopondBlocklists = new MonopondBlocklist();
+    $monopondBlocklists->dncr = "true";
+
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    $faxMessage->Blocklists = $monopondBlocklists;
+
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+    $sendFaxRequest->Documents = array($document);
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+
+```
+You can visit here the definition of Blocklists and its paremeters:
+* [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
+* [Blocklists Parameters](#blocklists-parameters);
+
+### Sending a Fax with FPS enabled in MonopondFaxMessage
+To check if a number is on the FPS blacklist (UK) before the fax is sent:
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    
+    /* Setup Blocklists */
+    $monopondBlocklists = new MonopondBlocklist();
+    $monopondBlocklists->fps = "true";
+
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    $faxMessage->Blocklists = $monopondBlocklists;
+
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+    $sendFaxRequest->Documents = array($document);
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+```
+You can visit here the definition of Blocklists and its paremeters:
+* [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
+* [Blocklists Parameters](#blocklists-parameters);
+
+### Sending a Fax with Smartblock enabled in MonopondFaxMessage
+To check if a number is on the Smartblock list before the fax is sent:
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = base64_encode($filedata);
+    
+    /* Setup Documents */
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.txt";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    
+    /* Setup Blocklists */
+    $monopondBlocklists = new MonopondBlocklist();
+    $monopondBlocklists->smartblock = "true";
+
+    /* Setup FaxMessages (Each contains an array of document objects) */
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    $faxMessage->Blocklists = $monopondBlocklists;
+
+    /* Setup FaxSendRequest (Each contains an array of fax messages) */
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+    $sendFaxRequest->Documents = array($document);
+
+    /* Send request to Monopond */
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    /* Display response */
+    print_r($sendRespone);
+
+```
+You can visit here the definition of Blocklists and its paremeters:
+* [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
+* [Blocklists Parameters](#blocklists-parameters);
+
 ### Sending multiple faxes:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another “FaxMessage”:
 
@@ -1215,7 +1328,6 @@ When making a resume request, you must provide at least a `BroadcastRef`, `SendR
  print_r($resumeFax);
 ```
 
-
 ### Response
 The response received from a `ResumeFaxRequest` is the same response you would receive when calling the `FaxStatus` method call with the `send` verbosity level. 
 
@@ -1462,3 +1574,11 @@ From TSID, To 61022221234 Mon Aug 28 15:32 2012 1 of 1
 **%%**|A literal % character
 
 TODO: The default value is set to: “From %from%, To %to%|%a %b %d %H:%M %Y”
+
+### Blocklists Parameters
+
+| **Name** | **Required** | **Type** | **Description** |
+| --- | --- | --- | --- |
+| **smartblock** | false | boolean | Blocks sending to a number if it has consistently failed in the past. |
+| **fps** | false | boolean | Wash numbers against the fps blocklist. |
+| **dncr** | false | boolean | Wash numbers against the dncr blocklist. |
