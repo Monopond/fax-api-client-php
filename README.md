@@ -1012,6 +1012,6 @@ Represents a fax document to be sent through the system. Supported file types ar
 -----|-----|-----|-----|-----
 **FileName**|**X**|String|The document filename including extension. This is important as it is used to help identify the document MIME type.|
 **FileData**|**X**|Base64|The document encoded in Base64 format.|
-**Order** | | Integer|If multiple documents are defined on a message this value will determine the order in which they will be transmitted.|0|
+**Order** |**X** | Integer|If multiple documents are defined on a message this value will determine the order in which they will be transmitted.|0|
 **DocMergeData**|||An Array of MergeFields|
 **StampMergeData**|||An Array of MergeFields|
