@@ -892,8 +892,11 @@ To know more about MaxFaxPages you can check it here:
 To send faxes to multiple destinations a request similar to the following example can be used. Please note the addition of another `FaxMessage`:
 
 ```php
+    // TODO: Enter your own credentials here
+    $client = new MonopondSOAPClientV2("monoponduser", "synacy22", MPENV::PRODUCTION_BETA);
+    
     // TODO: Put your file path here
-    $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
+    $filedata = fread(fopen("tests/hello.txt", "r"), filesize("tests/hello.txt"));
     $filedata = base64_encode($filedata);
     
     /* Setup Documents */
@@ -916,22 +919,21 @@ To send faxes to multiple destinations a request similar to the following exampl
     $faxMessage = new MonopondFaxMessage();
     $faxMessage->MessageRef = "Testing-message-1";
     $faxMessage->SendTo = "61011111111";
-    $faxMessage->Documents = $document;
+    $faxMessage->Documents[] = $document;
 
     $faxMessage2 = new MonopondFaxMessage();
     $faxMessage2->MessageRef = "Testing-message-2";
     $faxMessage2->SendTo = "61011111112";
-    $faxMessage2->Documents = $document2;
+    $faxMessage2->Documents[] = $document2;
 
     $faxMessage3 = new MonopondFaxMessage();
     $faxMessage3->MessageRef = "Testing-message-3";
     $faxMessage3->SendTo = "61011111112";
-    $faxMessage3->Documents = $document3;
+    $faxMessage3->Documents[] = $document3;
 
     /* Setup FaxSendRequest (Each contains an array of fax messages) */
     $sendFaxRequest = new MonopondSendFaxRequest();
     $sendFaxRequest->FaxMessages = array($faxMessage, $faxMessage2, $faxMessage3);
-    $sendFaxRequest->Documents = array($document);
 
     /* Send request to Monopond */
     $sendRespone = $client->sendFax($sendFaxRequest);
