@@ -1004,7 +1004,7 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
 
 ```php
 	// TODO: Put your file path here
-    $filedata = fread(fopen("./test.docx", "r"), filesize("./test.docx"));
+	$filedata = fread(fopen("tests/sample.doc", "r"), filesize("tests/sample.doc"));
 	$filedata = base64_encode($filedata);
 
 	$mergeField = new MonopondMergeField();
@@ -1045,8 +1045,8 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
 	$faxMessage2->Documents = array($document2);
 
 	$baseDocument = new MonopondDocument();
-	$baseDocument->DocumentRef = "send-1-document";
-	$baseDocument->FileName = "file.docx";
+	$baseDocument->DocumentRef = "send-1-document2";
+	$baseDocument->FileName = "file.doc";
 	$baseDocument->FileData = $filedata;
 	$baseDocument->Order = 0;
 
@@ -1060,148 +1060,9 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
 	$sendFaxRequest->Documents = array($baseDocument);
 
 	/* Send request to Monopond */
-    $sendRespone = $client->sendFax($sendFaxRequest);
-    /* Display response */
-    print_r($sendRespone);
-```
-
-### Sending Fax with TimeZone
-The Timezone is used to format the datetime display in the fax header.
-```php
-	// TODO: Put your file path here
-    $filedata = fread(fopen("./test.docx", "r"), filesize("./test.docx"));
-	$filedata = base64_encode($filedata);
-
-	$mergeField = new MonopondMergeField();
-	$mergeField->Key = "name";
-	$mergeField->Value = "Raspberry Pi";
-
-	$document1 = new MonopondDocument();
-	$document1->DocumentRef = "send-1-document";
-	$document1->DocMergeData[] = $mergeField;
-
-	/* Setup FaxMessages (Each contains an array of document objects) */
-	$faxMessage = new MonopondFaxMessage();
-	$faxMessage->MessageRef = "message-1";
-	$faxMessage->SendTo = "61290120211";
-	$faxMessage->SendFrom = "Test Fax";
-	$faxMessage->Resolution = "normal";
-	$faxMessage->Retries = 0;
-	$faxMessage->BusyRetries = 2;
-	$faxMessage->CLI = 61290120211;
-	$faxMessage->Documents = array($document1);
-	$faxMessage->TimeZone = 'Australia/Sydney';
-
-	$mergeField2 = new MonopondMergeField();
-	$mergeField2->Key = "name";
-	$mergeField2->Value = "Raspberry Pi 2";
-
-	$document2 = new MonopondDocument();
-	$document2->DocumentRef = "send-1-document";
-	$document2->DocMergeData[] = $mergeField2;
-
-	$faxMessage2 = new MonopondFaxMessage();
-	$faxMessage2->MessageRef = "message-2";
-	$faxMessage2->SendTo = "61290120211";
-	$faxMessage2->SendFrom = "Test Fax 2";
-	$faxMessage2->Resolution = "normal";
-	$faxMessage2->Retries = 0;
-	$faxMessage2->BusyRetries = 2;
-	$faxMessage2->CLI = 61011114111;
-	$faxMessage2->Documents = array($document2);
-	$faxMessage2->TimeZone = 'Australia/Sydney';
-
-	$baseDocument = new MonopondDocument();
-	$baseDocument->DocumentRef = "send-1-document";
-	$baseDocument->FileName = "file.docx";
-	$baseDocument->FileData = $filedata;
-	$baseDocument->Order = 0;
-
-	/* Setup FaxSendRequest (Each contains an array of fax messages) */
-	$sendFaxRequest = new MonopondSendFaxRequest();
-	$sendFaxRequest->BroadcastRef = "broadcast-1";
-	$sendFaxRequest->SendRef = "send-1";
-	$sendFaxRequest->HeaderFormat = "Testing";
-	$sendFaxRequest->FaxMessages[] = $faxMessage;
-	$sendFaxRequest->FaxMessages[] = $faxMessage2;
-	$sendFaxRequest->Documents = array($baseDocument);
-
-	/* Send request to Monopond */
-    $sendRespone = $client->sendFax($sendFaxRequest);
-    /* Display response */
-    print_r($sendRespone);
-```
-
-### Sending Fax with Blocklist
-A sample request must be similar to this following code below:
-
-```php
-	// TODO: Put your file path here
-    $filedata = fread(fopen("./test.docx", "r"), filesize("./test.docx"));
-	$filedata = base64_encode($filedata);
-
-	$mergeField = new MonopondMergeField();
-	$mergeField->Key = "name";
-	$mergeField->Value = "Raspberry Pi";
-
-	$document1 = new MonopondDocument();
-	$document1->DocumentRef = "send-1-document";
-	$document1->DocMergeData[] = $mergeField;
-
-    $monopondBlocklist = new MonopondBlocklist();
-    $monopondBlocklist->dncr = "true";
-
-	/* Setup FaxMessages (Each contains an array of document objects) */
-	$faxMessage = new MonopondFaxMessage();
-	$faxMessage->MessageRef = "message-1";
-	$faxMessage->SendTo = "61290120211";
-	$faxMessage->SendFrom = "Test Fax";
-	$faxMessage->Resolution = "normal";
-	$faxMessage->Retries = 0;
-	$faxMessage->BusyRetries = 2;
-	$faxMessage->CLI = 61290120211;
-	$faxMessage->Documents = array($document1);
-	$faxMessage->TimeZone = 'Australia/Sydney';
-	$faxMessage->Blocklists = $monopondBlocklist;
-
-	$mergeField2 = new MonopondMergeField();
-	$mergeField2->Key = "name";
-	$mergeField2->Value = "Raspberry Pi 2";
-
-	$document2 = new MonopondDocument();
-	$document2->DocumentRef = "send-1-document";
-	$document2->DocMergeData[] = $mergeField2;
-
-	$faxMessage2 = new MonopondFaxMessage();
-	$faxMessage2->MessageRef = "message-2";
-	$faxMessage2->SendTo = "61290120211";
-	$faxMessage2->SendFrom = "Test Fax 2";
-	$faxMessage2->Resolution = "normal";
-	$faxMessage2->Retries = 0;
-	$faxMessage2->BusyRetries = 2;
-	$faxMessage2->CLI = 61011114111;
-	$faxMessage2->Documents = array($document2);
-	$faxMessage2->TimeZone = 'Australia/Sydney';
-
-	$baseDocument = new MonopondDocument();
-	$baseDocument->DocumentRef = "send-1-document";
-	$baseDocument->FileName = "file.docx";
-	$baseDocument->FileData = $filedata;
-	$baseDocument->Order = 0;
-
-	/* Setup FaxSendRequest (Each contains an array of fax messages) */
-	$sendFaxRequest = new MonopondSendFaxRequest();
-	$sendFaxRequest->BroadcastRef = "broadcast-1";
-	$sendFaxRequest->SendRef = "send-1";
-	$sendFaxRequest->HeaderFormat = "Testing";
-	$sendFaxRequest->FaxMessages[] = $faxMessage;
-	$sendFaxRequest->FaxMessages[] = $faxMessage2;
-	$sendFaxRequest->Documents = array($baseDocument);
-
-	/* Send request to Monopond */
-    $sendRespone = $client->sendFax($sendFaxRequest);
-    /* Display response */
-    print_r($sendRespone);
+	$sendRespone = $client->sendFax($sendFaxRequest);
+	/* Display response */
+	print_r($sendRespone);
 ```
 
 ### Sending Tiff and PDF files with StampMergeData:
