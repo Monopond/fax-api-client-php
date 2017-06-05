@@ -309,9 +309,7 @@ You can visit the definition of Resolution and its values here:
 ### Sending a Fax with Resolution in MonopondSendFaxRequest
 To assign the fax resolution, a request similar to the following example can be used.
 ```php
-	// TODO: Enter your own credentials here
-    $client = new MonopondSOAPClientV2("monoponduser", "synacy22", MPENV::PRODUCTION_BETA);
-    
+	
     // TODO: Put your file path here
     $filedata = fread(fopen("tests/sample.txt", "r"), filesize("tests/sample.txt"));
     $filedata = base64_encode($filedata);
