@@ -293,11 +293,33 @@
 
 			return new MonopondResumeFaxResponse($messagesResponses);         
 		}
+
+		public function saveFaxDocument($saveFaxDocumentRequest) {
+			//$saveFaxDocumentRequest = $this->removeNullValues($saveFaxDocumentRequest);
+			$saveFaxDocumentRequest = new SoapVar($saveFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
+			try{
+					// Try to call fax status
+					$this->_SoapClient->SaveFaxDocument($saveFaxDocumentRequest);
+			}catch (SoapFault $exception) {
+					//echo "exception caught";
+					print_r($exception->getMessage());
+					//print_r($this->_SoapClient->__getLastResponse());
+			}
+		   
+			$XMLResponseString = $this->_SoapClient->__getLastResponse();
+			$XMLResponseString = str_replace("soap:", "", $XMLResponseString);
+			$XMLResponseString = str_replace("ns2:", "", $XMLResponseString);
+			
+			$element = new SimpleXMLElement($XMLResponseString);
+
+			$messagesResponses = $element->Body->SaveFaxDocumentResponse;
+			return new MonopondSaveFaxDocumentResponse($messagesResponses); 
+		}
 	}         
 
 	class MPENV {
 		const PRODUCTION = "https://api.monopond.com/fax/soap/v2.1/?wsdl";
-		const PRODUCTION_BETA = "https://beta.monopond.com/api/fax/v2.1?wsdl";
+		const PRODUCTION_BETA = "https://stagingbeta.monopond.com/api/fax/v2.1?wsdl";
 		const TEST = "http://test.api.monopond.com/fax/soap/v2.1/?wsdl";
 		const LOCAL = "http://localhost:8000/fax/soap/v2.1?wsdl";
 	}
@@ -572,5 +594,14 @@
 				$this->FaxMessages[] = new MonopondFaxMessageResponse($response);
 			}   
 		}
+	}
+
+	class MonopondSaveFaxDocumentRequest {
+		public $DocumentRef;
+		public $FileName;
+		public $FileData;
+	}
+
+	class MonopondSaveFaxDocumentResponse {
 	}
 ?>
