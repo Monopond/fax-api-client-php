@@ -56,7 +56,7 @@ You can visit the following properties of MonopondDocument, MonopondFaxMessage, 
 * [MonopondFaxMessage Properties](#monopondfaxmessage-properties)
 * [MonopondSendFaxRequest Properties](#monopondsendfaxrequest-properties)
 
-### Assigning DocumentRef to MonopondDocument
+### Assigning DocumentRef in MonopondDocument
 DocumentRef must be unique and a request must be similar to this example:
 ```php
     // TODO: Put your file path here
