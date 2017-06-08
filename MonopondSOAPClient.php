@@ -1,7 +1,7 @@
 
 <?php
 
-	class MonopondSOAPClientV2 {
+	class MonopondSOAPClientV2_1 {
 		private $_username;
 		private $_password;
 		private $_wsdl;
