@@ -1548,7 +1548,33 @@ This function provides you with a method to generate a preview of a saved docume
 
 ### Sample Request
 ```php
-TODO: code here
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/fax1.tif", "r"), filesize("tests/fax1.tif"));
+    $filedata = base64_encode($filedata);
+
+    $stampFiledata = fread(fopen("tests/stamp.jpg", "r"), filesize("tests/stamp.jpg"));
+    $stampFiledata = base64_encode($stampFiledata);
+
+    $stampMergeFieldKey = new MonopondStampMergeFieldKey();
+    $stampMergeFieldKey->xCoord = "390";
+    $stampMergeFieldKey->yCoord = "757";
+
+    $stampMergeFieldTextValue = new MonopondStampMergeFieldTextValue();
+    $stampMergeFieldTextValue->fontName = "Bookman-DemiItalic";
+    $stampMergeFieldTextValue->Value = "Hello World!";
+
+    $monopondStampMergeField = new MonopondStampMergeField();
+    $monopondStampMergeField->StampMergeFieldKey = $stampMergeFieldKey;
+    $monopondStampMergeField->TextValue = $stampMergeFieldTextValue;
+
+    $faxDocumentPreviewRequest = new MonopondFaxDocumentPreviewRequest();
+    $faxDocumentPreviewRequest->DocumentRef = "sample-document-ref";
+    $faxDocumentPreviewRequest->Resolution = "fine";
+    $faxDocumentPreviewRequest->DitheringTechnique = "normal";
+    $faxDocumentPreviewRequest->StampMergeData = array($monopondStampMergeField);
+
+    $faxDocumentPreviewResponse = $client->faxDocumentPreview($faxDocumentPreviewRequest);
+    print_r($faxDocumentPreviewResponse);
 ```
 
 ### Request
