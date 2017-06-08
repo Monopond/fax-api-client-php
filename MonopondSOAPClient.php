@@ -63,8 +63,14 @@
 					$documentXmlString .= '<DocumentRef>'.$document->DocumentRef.'</DocumentRef>';
 				}
 
-				$documentXmlString .= '<FileName>'.$document->FileName.'</FileName>';
-				$documentXmlString .= '<FileData>'.$document->FileData.'</FileData>';
+				if($document->FileName != null) {
+					$documentXmlString .= '<FileName>'.$document->FileName.'</FileName>';
+				}
+
+				if($document->FileData != null) {
+					$documentXmlString .= '<FileData>'.$document->FileData.'</FileData>';
+				}
+
 				$documentXmlString .= '<Order>'.$document->Order.'</Order>';
 
 				if($document->DitheringTechnique != null) {
@@ -72,7 +78,11 @@
 				}
 
 				if(!empty($document->DocMergeData)) {
-					$documentXmlString .= $this->convertMergeFieldArrayToSoapString($document->DocMergeData);
+					$documentXmlString .= $this->convertDocMergeFieldArrayToSoapString($document->DocMergeData);
+				}
+
+				if(!empty($document->StampMergeData)) {
+					$documentXmlString .= $this->convertStampMergeFieldArrayToSoapString($document->StampMergeData);
 				}
 
 				$documentXmlString .= '</Document>';
@@ -86,20 +96,114 @@
 			return $soapDocuments;
 		}
 
-		private function convertMergeFieldArrayToSoapString($mergeFieldArray) {
-			
+		private function convertDocMergeFieldArrayToSoapString($docMergeFieldArray) {
 			$DocMergeDataString = '<DocMergeData>';
-			foreach ($mergeFieldArray as $mergeField) {
-				if($mergeField->Key != null || $mergeField->Value != null) {
-					$DocMergeDataString .= '<MergeField>';
-					$DocMergeDataString .= '<Key>'.$mergeField->Key.'</Key>';
-					$DocMergeDataString .= '<Value>'.$mergeField->Value.'</Value>';
-					$DocMergeDataString .= '</MergeField>';
+			
+			foreach ($docMergeFieldArray as $docMergeField) {
+				if($docMergeField->Key != null || $docMergeField->Value != null) {
+					$docMergeXmlString .= '<MergeField>';
+					$docMergeXmlString .= '<Key>'.$docMergeField->Key.'</Key>';
+					$docMergeXmlString .= '<Value>'.$docMergeField->Value.'</Value>';
+					$docMergeXmlString .= '</MergeField>';
 				}
 			}
-			$DocMergeDataString .= '</DocMergeData>';
+			$docMergeXmlString .= '</DocMergeData>';
 
-			return $DocMergeDataString;
+			return $docMergeXmlString;
+		}
+
+		private function convertStampMergeFieldArrayToSoapString($stampMergeFieldArray) {
+			
+			$stampMergeXmlString = '<StampMergeData>';
+
+			foreach ($stampMergeFieldArray as $stampMergeField) {
+
+				if($stampMergeField->StampMergeFieldKey != null || $stampMergeField->TextValue != null || $stampMergeField->ImageValue != null) {
+					$stampMergeXmlString .= '<MergeField>';
+
+					if($stampMergeField->StampMergeFieldKey != null) {
+						$stampMergeXmlString .= $this->createStampMergeFieldKey($stampMergeField->StampMergeFieldKey);
+					}
+					
+					if($stampMergeField->TextValue != null) {
+						$stampMergeXmlString .= $this->createTextValueElement($stampMergeField->TextValue);
+					}
+
+					if($stampMergeField->ImageValue != null) {
+						$stampMergeXmlString .= $this->createImageValueElement($stampMergeField->ImageValue);
+					}
+
+					$stampMergeXmlString .= '</MergeField>';
+				}
+			}
+			$stampMergeXmlString .= '</StampMergeData>';
+
+			return $stampMergeXmlString;
+		}
+
+		private function createStampMergeFieldKey($mergeFieldKey) {
+			
+			$stampMergeXmlString = '<Key ';
+
+			if($mergeFieldKey->xCoord != null) {
+				$stampMergeXmlString .= 'xCoord="'.$mergeFieldKey->xCoord.'" ';
+			}
+
+			if($mergeFieldKey->yCoord != null) {
+				$stampMergeXmlString .= 'yCoord="'.$mergeFieldKey->yCoord.'" ';
+			}
+			$stampMergeXmlString .= '/>';
+
+			return $stampMergeXmlString;
+		}
+
+		private function createTextValueElement($stampMergeTextValue) {
+			
+			$stampMergeXmlString = '<TextValue ';
+						
+			if($stampMergeTextValue->fontName != null) {
+				$stampMergeXmlString .= 'fontName="'.$stampMergeTextValue->fontName.'"';
+			}
+
+			if($stampMergeTextValue->fontSize != null) {
+				$stampMergeXmlString .= 'fontSize="'.$stampMergeTextValue->fontSize.'"';
+			}
+
+			$stampMergeXmlString .= '>';
+
+			if($stampMergeTextValue->Value != null) {
+				$stampMergeXmlString .= $stampMergeTextValue->Value;
+			}
+
+			$stampMergeXmlString .= '</TextValue>';
+
+			return $stampMergeXmlString;
+		}
+
+		private function createImageValueElement($stampMergeImageValue) {
+
+			$stampMergeXmlString = '<ImageValue ';
+
+			if($stampMergeImageValue->width) {
+				$stampMergeXmlString .= 'width="'.$stampMergeImageValue->width.'" ';
+			}
+
+			if($stampMergeImageValue->height) {
+				$stampMergeXmlString .= 'height="'.$stampMergeImageValue->height.'" ';
+			}
+
+			$stampMergeXmlString .= '>';
+
+			if($stampMergeImageValue->FileName) {
+				$stampMergeXmlString .= '<FileName>'.$stampMergeImageValue->FileName.'</FileName>';
+			}
+
+			if($stampMergeImageValue->FileData) {
+				$stampMergeXmlString .= '<FileData>'.$stampMergeImageValue->FileData.'</FileData>';
+			}
+
+			$stampMergeXmlString .= '</ImageValue>';
+			return $stampMergeXmlString;
 		}
 
 		private function removeNullValues($object) {
@@ -178,6 +282,7 @@
 			try{
 					// Try to call send fax
 					$this->_SoapClient->SendFax($SendFaxRequest);
+					print_r($this->_SoapClient->__getLastRequest());
 			}catch (SoapFault $exception) {
 				// Print exception if one occured
 				print_r($exception->getMessage());
@@ -294,7 +399,7 @@
 		}
 
 		public function saveFaxDocument($saveFaxDocumentRequest) {
-			//$saveFaxDocumentRequest = $this->removeNullValues($saveFaxDocumentRequest);
+			$saveFaxDocumentRequest = $this->removeNullValues($saveFaxDocumentRequest);
 			$saveFaxDocumentRequest = new SoapVar($saveFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
 			try{
 					// Try to call fax status
@@ -314,11 +419,74 @@
 			$messagesResponses = $element->Body->SaveFaxDocumentResponse;
 			return new MonopondSaveFaxDocumentResponse($messagesResponses); 
 		}
+
+		public function faxDocumentPreview($faxDocumentPreviewRequest) {
+			$faxDocumentPreviewRequest = $this->removeNullValues($faxDocumentPreviewRequest);
+			
+			if(!empty($document->DocMergeData)) {
+				$docMergeXmlString = $this->convertDocMergeFieldArrayToSoapString($faxDocumentPreviewRequest->DocMergeData);
+			 	$faxDocumentPreviewRequest->DocMergeData = new SoapVar($docMergeXmlString, XSD_ANYXML);
+			}
+
+			if(!empty($faxDocumentPreviewRequest->StampMergeData)) {
+				$stampMergeXmlString = $this->convertStampMergeFieldArrayToSoapString($faxDocumentPreviewRequest->StampMergeData);
+				$faxDocumentPreviewRequest->StampMergeData = new SoapVar($stampMergeXmlString, XSD_ANYXML);
+			}
+
+			$faxDocumentPreviewRequest = new SoapVar($faxDocumentPreviewRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
+			
+			try{
+					// Try to call fax status
+					$this->_SoapClient->FaxDocumentPreview($faxDocumentPreviewRequest);
+					print_r($this->_SoapClient->__getLastRequest());
+			}catch (SoapFault $exception) {
+					//echo "exception caught";
+					print_r($exception->getMessage());
+					//print_r($this->_SoapClient->__getLastResponse());
+			}
+
+			$XMLResponseString = $this->_SoapClient->__getLastResponse();
+			$XMLResponseString = str_replace("soap:", "", $XMLResponseString);
+			$XMLResponseString = str_replace("ns2:", "", $XMLResponseString);
+			
+			$element = new SimpleXMLElement($XMLResponseString);
+
+			$messagesResponses = $element->Body->FaxDocumentPreviewResponse;
+			return new MonopondFaxDocumentPreviewResponse($messagesResponses); 
+		}
+
+		public function deleteFaxDocument($deleteFaxDocumentRequest) {
+			$deleteFaxDocumentRequest = $this->removeNullValues($deleteFaxDocumentRequest);
+
+			if(!empty($deleteFaxDocumentRequest->MessageRefs)) {
+				$deleteFaxDocumentRequest->MessageRefs = new SoapVar($deleteFaxDocumentRequest->MessageRefs, SOAP_ENC_OBJECT, NULL, NULL, "MessageRefs");
+			}
+
+			$deleteFaxDocumentRequest = new SoapVar($deleteFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
+			
+			try{
+					// Try to call fax status
+					$this->_SoapClient->DeleteFaxDocument($deleteFaxDocumentRequest);
+			}catch (SoapFault $exception) {
+					//echo "exception caught";
+					print_r($exception->getMessage());
+					//print_r($this->_SoapClient->__getLastResponse());
+			}
+		   
+			$XMLResponseString = $this->_SoapClient->__getLastResponse();
+			$XMLResponseString = str_replace("soap:", "", $XMLResponseString);
+			$XMLResponseString = str_replace("ns2:", "", $XMLResponseString);
+			
+			$element = new SimpleXMLElement($XMLResponseString);
+
+			$messagesResponses = $element->Body->DeleteFaxDocumentResponse;
+			return new MonopondSaveFaxDocumentResponse($messagesResponses); 
+		}
 	}         
 
 	class MPENV {
 		const PRODUCTION = "https://api.monopond.com/fax/soap/v2.1/?wsdl";
-		const PRODUCTION_BETA = "https://stagingbeta.monopond.com/api/fax/v2.1?wsdl";
+		const PRODUCTION_BETA = "https://beta.monopond.com/api/fax/v2.2?wsdl";
 		const TEST = "http://test.api.monopond.com/fax/soap/v2.1/?wsdl";
 		const LOCAL = "http://localhost:8000/fax/soap/v2.1?wsdl";
 	}
@@ -336,6 +504,30 @@
 	    public $Value;
 	}
 
+	class MonopondStampMergeField {
+		public $StampMergeFieldKey;
+		public $TextValue;
+		public $ImageValue;
+	}
+
+	class MonopondStampMergeFieldKey {
+		public $xCoord;
+		public $yCoord;
+	}
+
+	class MonopondStampMergeFieldTextValue {
+		public $fontName;
+		public $fontSize;
+		public $Value;
+	}
+
+	class MonopondStampMergeFieldImageValue {
+		public $FileName;
+		public $FileData;
+		public $width;
+		public $height;
+	}
+
 	class MonopondDocument {
 		public $DocumentRef;
 		public $FileName;
@@ -343,6 +535,7 @@
 		public $Order;
 		public $DitheringTechnique;
 		public $DocMergeData;
+		public $StampMergeData;
 	}
 
 	class MonopondFaxMessage {
@@ -602,5 +795,37 @@
 	}
 
 	class MonopondSaveFaxDocumentResponse {
+	}
+
+	class MonopondFaxDocumentPreviewRequest {
+		public $DocumentRef;
+		public $Resolution;
+		public $DitheringTechnique;
+		public $DocMergeData;
+		public $StampMergeData;
+	}
+
+	class MonopondFaxDocumentPreviewResponse {
+
+		public $TiffPreview;
+		public $NumberOfPages;
+
+		function __construct($response) {
+			$this->TiffPreview = (string)$response[0]->TiffPreview;
+			$this->NumberOfPages = (string)$response[0]->NumberOfPages;
+		}
+	}
+
+	class MonopondDeleteFaxDocumentRequest {
+
+		public $DocumentRef;
+		public $MessageRefs;
+		public $MessageRef;
+		public $SendRef;
+		public $BroadcastRef;
+	}
+
+	class MonopondDeleteFaxDocumentResponse {
+
 	}
 ?>
