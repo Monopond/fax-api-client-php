@@ -1671,7 +1671,7 @@ This function removes a saved fax document from the system.
 |**MessageRef**| | *String* | User-defined message reference. |
 |**SendRef**| | *String* | User-defined send reference. |
 |**BroadcastRef**| | *String* | User-defined broadcast reference. |
-|**MessageRefs**| | *String* | List of MessageRef. |
+|**MessageRefs**| | *String* | List of MessageRefs. |
 
 ### SOAP Faults
 This function will throw one of the following SOAP faults/exceptions if something went wrong:
