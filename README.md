@@ -1145,7 +1145,7 @@ The example below shows ```field1``` will be replaced by the value of ```Test```
 ### Sending Tiff and PDF files with StampMergeData:
 (This request only works in version 2.1(or higher) of the fax-api.)
 
-This request allows a PDF or TIFF file to be stamped with an image or text, based on X-Y coordinates. The x and y coordinates (0,0) starts at the top left part of the document. The screenshots below are examples of what the request does.
+This request allows a TIFF file to be stamped with an image or text, based on X-Y coordinates. The x and y coordinates (0,0) starts at the top left part of the document. The screenshots below are examples of what the request does.
 
 Original tiff file:
 
@@ -1165,10 +1165,98 @@ The same tiff file, but this time, with a text stamp:
 
 ##### Sample Request
 
-The example below shows a PDF that will be stamped with the text “Hello” at xCoord=“1287” and yCoord=“421”, and an image at xCoord=“283” and yCoord=“120”
+The example below shows a TIFF that will be stamped with the text “Hello” at xCoord=“1287” and yCoord=“421”, and an image at xCoord=“283” and yCoord=“120”
 
 ```php
-	TODO: code here  
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/document.tiff", "r"), filesize("tests/document.tiff"));
+    $filedata = base64_encode($filedata);
+
+    $stampMergeFieldKey = new MonopondStampMergeFieldKey();
+    $stampMergeFieldKey->xCoord = "1287";
+    $stampMergeFieldKey->yCoord = "421";
+
+    $stampMergeFieldTextValue = new MonopondStampMergeFieldTextValue();
+    $stampMergeFieldTextValue->fontName = "Bookman-DemiItalic";
+    $stampMergeFieldTextValue->Value = "Hello";
+
+    $stampMergeField = new MonopondStampMergeField();
+    $stampMergeField->StampMergeFieldKey = $stampMergeFieldKey;
+    $stampMergeField->TextValue = $stampMergeFieldTextValue;
+
+    // TODO: Setup Document
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.tiff";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    $document->StampMergeData[] = $stampMergeField;
+
+    // TODO: Setup FaxMessage
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    $faxMessage->SendFrom = "Test Fax";
+    $faxMessage->Documents = array($document);
+    $faxMessage->Resolution = "normal";
+
+    // // TODO: Setup FaxSendRequest 
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+    $sendFaxRequest->SendRef = "Send-Ref-1";
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+
+    // // Call send fax method
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    print_r($sendRespone);
+```
+
+### Request with Image Stamping
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/document.tiff", "r"), filesize("tests/document.tiff"));
+    $filedata = base64_encode($filedata);
+
+    $stampFiledata = fread(fopen("tests/stamp.png", "r"), filesize("tests/stamp.png"));
+    $stampFiledata = base64_encode($stampFiledata);
+    
+    $stampMergeFieldKey = new MonopondStampMergeFieldKey();
+    $stampMergeFieldKey->xCoord = "283";
+    $stampMergeFieldKey->yCoord = "120";
+
+    $stampMergeFieldImageValue = new MonopondStampMergeFieldImageValue();
+    $stampMergeFieldImageValue->FileName = "hello.png";
+    $stampMergeFieldImageValue->FileData = $stampFiledata;
+    $stampMergeFieldImageValue->width = "25";
+    $stampMergeFieldImageValue->height = "25";
+
+    $stampMergeField = new MonopondStampMergeField();
+    $stampMergeField->StampMergeFieldKey = $stampMergeFieldKey;
+    $stampMergeField->ImageValue = $stampMergeFieldImageValue;
+
+    // TODO: Setup Document
+    $document = new MonopondDocument();
+    $document->FileName = "AnyFileName1.tiff";
+    $document->FileData = $filedata;
+    $document->Order = 0;
+    $document->StampMergeData[] = $stampMergeField;
+
+    // TODO: Setup FaxMessage
+    $faxMessage = new MonopondFaxMessage();
+    $faxMessage->MessageRef = "Testing-message-1";
+    $faxMessage->SendTo = "61011111111";
+    $faxMessage->SendFrom = "Test Fax";
+    $faxMessage->Documents = array($document);
+    $faxMessage->Resolution = "normal";
+
+    // // TODO: Setup FaxSendRequest 
+    $sendFaxRequest = new MonopondSendFaxRequest();
+    $sendFaxRequest->BroadcastRef = "Broadcast-test-1";
+    $sendFaxRequest->SendRef = "Send-Ref-1";
+    $sendFaxRequest->FaxMessages[] = $faxMessage;
+
+    // // Call send fax method
+    $sendRespone = $client->sendFax($sendFaxRequest);
+    print_r($sendRespone);
 ```
 
 <a name="docMergeDataParameters"></a> 
@@ -1546,13 +1634,25 @@ You can find more details on these faults [here](#section5).
 
 This function provides you with a method to generate a preview of a saved document at different resolutions with various dithering settings. It returns a tiff data in base64 along with a page count.
 
-### Sample Request
+### Normal PreviewFaxDocument Request
 ```php
     // TODO: Put your file path here
-    $filedata = fread(fopen("tests/fax1.tif", "r"), filesize("tests/fax1.tif"));
+    $faxDocumentPreviewRequest = new MonopondFaxDocumentPreviewRequest();
+    $faxDocumentPreviewRequest->DocumentRef = "hello-space2021";
+    $faxDocumentPreviewRequest->Resolution = "fine";
+    $faxDocumentPreviewRequest->DitheringTechnique = "normal";
+
+    $faxDocumentPreviewResponse = $client->faxDocumentPreview($faxDocumentPreviewRequest);
+    print_r($faxDocumentPreviewResponse);
+```
+
+### PreviewFaxDocument Request with StampMergeFieldText
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/document.tiff", "r"), filesize("tests/document.tiff"));
     $filedata = base64_encode($filedata);
 
-    $stampFiledata = fread(fopen("tests/stamp.jpg", "r"), filesize("tests/stamp.jpg"));
+    $stampFiledata = fread(fopen("tests/stamp.png", "r"), filesize("tests/stamp.png"));
     $stampFiledata = base64_encode($stampFiledata);
 
     $stampMergeFieldKey = new MonopondStampMergeFieldKey();
@@ -1575,6 +1675,63 @@ This function provides you with a method to generate a preview of a saved docume
 
     $faxDocumentPreviewResponse = $client->faxDocumentPreview($faxDocumentPreviewRequest);
     print_r($faxDocumentPreviewResponse);
+```
+
+### PreviewFaxDocument Request with StampMergeFieldText
+```php
+    $filedata = fread(fopen("tests/document.tiff", "r"), filesize("tests/document.tiff"));
+    $filedata = base64_encode($filedata);
+
+    $stampFiledata = fread(fopen("tests/stamp.png", "r"), filesize("tests/stamp.png"));
+    $stampFiledata = base64_encode($stampFiledata);
+
+    $stampMergeFieldKey = new MonopondStampMergeFieldKey();
+    $stampMergeFieldKey->xCoord = "390";
+    $stampMergeFieldKey->yCoord = "757";
+
+    $stampMergeFieldImageValue = new MonopondStampMergeFieldImageValue();
+    $stampMergeFieldImageValue->FileName = "hello.png";
+    $stampMergeFieldImageValue->FileData = $stampFiledata;
+    $stampMergeFieldImageValue->width = "25";
+    $stampMergeFieldImageValue->height = "25";
+
+    $stampMergeField = new MonopondStampMergeField();
+    $stampMergeField->StampMergeFieldKey = $stampMergeFieldKey;
+    $stampMergeField->ImageValue = $stampMergeFieldImageValue;
+
+    $faxDocumentPreviewRequest = new MonopondFaxDocumentPreviewRequest();
+    $faxDocumentPreviewRequest->DocumentRef = "hello-space2021";
+    $faxDocumentPreviewRequest->Resolution = "fine";
+    $faxDocumentPreviewRequest->DitheringTechnique = "normal";
+    $faxDocumentPreviewRequest->StampMergeData = array($stampMergeField);
+
+    $faxDocumentPreviewResponse = $client->faxDocumentPreview($faxDocumentPreviewRequest);
+    print_r($faxDocumentPreviewResponse);
+```
+
+### PreviewFaxDocument Request with DocMergeData
+```php
+    // TODO: Put your file path here
+    $filedata = fread(fopen("tests/sample.doc", "r"), filesize("tests/sample.doc"));
+    $filedata = base64_encode($filedata);
+
+    $mergeField = new MonopondMergeField();
+    $mergeField->Key = "field1";
+    $mergeField->Value = "Raspberry Pi";
+
+    $mergeField2 = new MonopondMergeField();
+    $mergeField2->Key = "field2";
+    $mergeField2->Value = "Human";
+
+    $faxDocumentPreviewRequest = new MonopondFaxDocumentPreviewRequest();
+    $faxDocumentPreviewRequest->DocumentRef = "sample-documentref";
+    $faxDocumentPreviewRequest->Resolution = "fine";
+    $faxDocumentPreviewRequest->DitheringTechnique = "normal";
+    $faxDocumentPreviewRequest->DocMergeData = array($mergeField, $mergeField2);
+
+    $faxDocumentPreviewResponse = $client->faxDocumentPreview($faxDocumentPreviewRequest);
+    print_r($faxDocumentPreviewResponse);
+
 ```
 
 ### Request
