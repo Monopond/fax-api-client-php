@@ -1617,7 +1617,16 @@ This function allows you to upload a document and save it under a document refer
 ### Sample Request
 
 ```php
-TODO: code here
+    $filedata = fread(fopen("tests/test.pdf", "r"), filesize("tests/test.pdf"));
+    $filedata = base64_encode($filedata);
+
+    $saveFaxDocumentRequest = new MonopondSaveFaxDocumentRequest();
+    $saveFaxDocumentRequest->DocumentRef = "sample-document-ref";
+    $saveFaxDocumentRequest->FileName = "test.pdf";
+    $saveFaxDocumentRequest->FileData = $filedata;
+
+    $saveFaxDocumentResponse = $client->saveFaxDocument($saveFaxDocumentRequest);
+    print_r($saveFaxDocumentResponse);
 ```
 
 ### Request
