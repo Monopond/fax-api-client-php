@@ -87,18 +87,17 @@
 		}
 
 		private function convertMergeFieldArrayToSoapString($mergeFieldArray) {
-			$DocMergeDataString = '';
 			
+			$DocMergeDataString = '<DocMergeData>';
 			foreach ($mergeFieldArray as $mergeField) {
-				$DocMergeDataString .= '<DocMergeData>';
 				if($mergeField->Key != null || $mergeField->Value != null) {
 					$DocMergeDataString .= '<MergeField>';
 					$DocMergeDataString .= '<Key>'.$mergeField->Key.'</Key>';
 					$DocMergeDataString .= '<Value>'.$mergeField->Value.'</Value>';
 					$DocMergeDataString .= '</MergeField>';
 				}
-				$DocMergeDataString .= '</DocMergeData>';
 			}
+			$DocMergeDataString .= '</DocMergeData>';
 
 			return $DocMergeDataString;
 		}
