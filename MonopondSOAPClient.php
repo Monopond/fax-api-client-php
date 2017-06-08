@@ -97,7 +97,7 @@
 		}
 
 		private function convertDocMergeFieldArrayToSoapString($docMergeFieldArray) {
-			$DocMergeDataString = '<DocMergeData>';
+			$docMergeXmlString = '<DocMergeData>';
 			
 			foreach ($docMergeFieldArray as $docMergeField) {
 				if($docMergeField->Key != null || $docMergeField->Value != null) {
@@ -108,7 +108,6 @@
 				}
 			}
 			$docMergeXmlString .= '</DocMergeData>';
-
 			return $docMergeXmlString;
 		}
 
@@ -423,10 +422,11 @@
 		public function faxDocumentPreview($faxDocumentPreviewRequest) {
 			$faxDocumentPreviewRequest = $this->removeNullValues($faxDocumentPreviewRequest);
 			
-			if(!empty($document->DocMergeData)) {
+			if(!empty($faxDocumentPreviewRequest->DocMergeData)) {
 				$docMergeXmlString = $this->convertDocMergeFieldArrayToSoapString($faxDocumentPreviewRequest->DocMergeData);
 			 	$faxDocumentPreviewRequest->DocMergeData = new SoapVar($docMergeXmlString, XSD_ANYXML);
 			}
+
 
 			if(!empty($faxDocumentPreviewRequest->StampMergeData)) {
 				$stampMergeXmlString = $this->convertStampMergeFieldArrayToSoapString($faxDocumentPreviewRequest->StampMergeData);
@@ -438,7 +438,6 @@
 			try{
 					// Try to call fax status
 					$this->_SoapClient->FaxDocumentPreview($faxDocumentPreviewRequest);
-					print_r($this->_SoapClient->__getLastRequest());
 			}catch (SoapFault $exception) {
 					//echo "exception caught";
 					print_r($exception->getMessage());
