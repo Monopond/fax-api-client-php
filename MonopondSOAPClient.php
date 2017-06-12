@@ -240,6 +240,14 @@
 
 			return $blocklist;
 		}
+		
+		private function createMessageRefsSoapVarObjects($messageRefs) {
+			$messageRefSoapObjects = array();
+			foreach ($messageRefs as $messageRef) {
+				$messageRefSoapObjects[] = new SoapVar($messageRef,SOAP_ENC_OBJECT,null,null,"MessageRef");
+			}
+			return $messageRefSoapObjects;
+		}
 			
 		public function sendFax($SendFaxRequest) {
 			$SendFaxRequest = $this->removeNullValues($SendFaxRequest);        
@@ -458,7 +466,7 @@
 			$deleteFaxDocumentRequest = $this->removeNullValues($deleteFaxDocumentRequest);
 
 			if(!empty($deleteFaxDocumentRequest->MessageRefs)) {
-				$deleteFaxDocumentRequest->MessageRefs = new SoapVar($deleteFaxDocumentRequest->MessageRefs, SOAP_ENC_OBJECT, NULL, NULL, "MessageRefs");
+				$deleteFaxDocumentRequest->MessageRefs = new SoapVar($this->createMessageRefsSoapVarObjects($deleteFaxDocumentRequest->MessageRefs), SOAP_ENC_OBJECT, NULL, NULL, "MessageRefs");
 			}
 
 			$deleteFaxDocumentRequest = new SoapVar($deleteFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
