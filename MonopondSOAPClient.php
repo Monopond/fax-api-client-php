@@ -161,11 +161,11 @@
 			$stampMergeXmlString = '<TextValue ';
 						
 			if($stampMergeTextValue->fontName != null) {
-				$stampMergeXmlString .= 'fontName="'.$stampMergeTextValue->fontName.'"';
+				$stampMergeXmlString .= 'fontName="'.$stampMergeTextValue->fontName.'" ';
 			}
 
 			if($stampMergeTextValue->fontSize != null) {
-				$stampMergeXmlString .= 'fontSize="'.$stampMergeTextValue->fontSize.'"';
+				$stampMergeXmlString .= 'fontSize="'.$stampMergeTextValue->fontSize.'" ';
 			}
 
 			$stampMergeXmlString .= '>';
