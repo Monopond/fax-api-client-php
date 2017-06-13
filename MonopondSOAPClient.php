@@ -465,15 +465,17 @@
 		public function deleteFaxDocument($deleteFaxDocumentRequest) {
 			$deleteFaxDocumentRequest = $this->removeNullValues($deleteFaxDocumentRequest);
 
-			if(!empty($deleteFaxDocumentRequest->MessageRefs)) {
-				$deleteFaxDocumentRequest->MessageRefs = new SoapVar($this->createMessageRefsSoapVarObjects($deleteFaxDocumentRequest->MessageRefs), SOAP_ENC_OBJECT, NULL, NULL, "MessageRefs");
-			}
+			// TODO: Temporarily disabled since fax api in whitelabel haven't implemented the multiple deletion of messageRefs.
+			// if(!empty($deleteFaxDocumentRequest->MessageRefs)) {
+			// 	$deleteFaxDocumentRequest->MessageRefs = new SoapVar($this->createMessageRefsSoapVarObjects($deleteFaxDocumentRequest->MessageRefs), SOAP_ENC_OBJECT, NULL, NULL, "MessageRefs");
+			// }
 
 			$deleteFaxDocumentRequest = new SoapVar($deleteFaxDocumentRequest,SOAP_ENC_OBJECT,NULL,$this->_strWSSENS,NULL,$this->_strWSSENS);
 			
 			try{
 					// Try to call fax status
 					$this->_SoapClient->DeleteFaxDocument($deleteFaxDocumentRequest);
+					print_r($this->_SoapClient->__getLastRequest());
 			}catch (SoapFault $exception) {
 					//echo "exception caught";
 					print_r($exception->getMessage());
@@ -487,7 +489,7 @@
 			$element = new SimpleXMLElement($XMLResponseString);
 
 			$messagesResponses = $element->Body->DeleteFaxDocumentResponse;
-			return new MonopondSaveFaxDocumentResponse($messagesResponses); 
+			return new MonopondDeleteFaxDocumentResponse($messagesResponses); 
 		}
 	}         
 
@@ -826,7 +828,6 @@
 	class MonopondDeleteFaxDocumentRequest {
 
 		public $DocumentRef;
-		public $MessageRefs;
 		public $MessageRef;
 		public $SendRef;
 		public $BroadcastRef;
