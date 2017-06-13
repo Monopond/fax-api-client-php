@@ -465,7 +465,7 @@
 		public function deleteFaxDocument($deleteFaxDocumentRequest) {
 			$deleteFaxDocumentRequest = $this->removeNullValues($deleteFaxDocumentRequest);
 
-			// TODO: Temporarily disabled since fax api in whitelabel haven't implemented the multiple deletion of messageRefs.
+			// TODO: Enable if the multiple deletion of messageRefs will be implemented in whitelabel fax api.
 			// if(!empty($deleteFaxDocumentRequest->MessageRefs)) {
 			// 	$deleteFaxDocumentRequest->MessageRefs = new SoapVar($this->createMessageRefsSoapVarObjects($deleteFaxDocumentRequest->MessageRefs), SOAP_ENC_OBJECT, NULL, NULL, "MessageRefs");
 			// }
