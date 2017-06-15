@@ -2,7 +2,7 @@
 
     require_once dirname(__FILE__) . '/../MonopondSOAPClient.php';
 
-class MonopondSOAPClientV2Test extends PHPUnit_Framework_TestCase {
+class MonopondSOAPClientV2_1Test extends PHPUnit_Framework_TestCase {
 
     public function testFaxStatusWithBriefVerbosity(){
     	$client = $this->getMockFromWsdl('faxapi-v2.wsdl', 'faxStatus');
@@ -407,7 +407,7 @@ class MonopondSOAPClientV2Test extends PHPUnit_Framework_TestCase {
     public function testSendFaxSendSingleFax(){
     	//needs actual connection
     	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("user", "password", MPENV::Local);
+    	$client = new MonopondSOAPClientV2_1("user", "password", MPENV::Local);
     	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
     	$filedata = base64_encode($filedata);
 
@@ -438,7 +438,7 @@ class MonopondSOAPClientV2Test extends PHPUnit_Framework_TestCase {
     public function testSendFaxMultipleFaxes(){
 	//needs actual connection
     	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("user", "password", MPENV::Local);
+    	$client = new MonopondSOAPClientV2_1("user", "password", MPENV::Local);
     	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
     	$filedata = base64_encode($filedata);
 
@@ -489,7 +489,7 @@ class MonopondSOAPClientV2Test extends PHPUnit_Framework_TestCase {
     public function testSendFaxSendBroadcast(){
     	//needs actual connection
     	//replace with valid username and password
-    	$client = new MonopondSOAPClientV2("user", "password", MPENV::Local);
+    	$client = new MonopondSOAPClientV2_1("user", "password", MPENV::Local);
     	$filedata = fread(fopen("./tests/sample.txt", "r"), filesize("./tests/sample.txt"));
     	$filedata = base64_encode($filedata);
 
