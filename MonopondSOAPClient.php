@@ -289,7 +289,6 @@
 			try{
 					// Try to call send fax
 					$this->_SoapClient->SendFax($SendFaxRequest);
-					print_r($this->_SoapClient->__getLastRequest());
 			}catch (SoapFault $exception) {
 				// Print exception if one occured
 				print_r($exception->getMessage());
