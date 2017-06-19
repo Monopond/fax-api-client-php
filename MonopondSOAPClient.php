@@ -29,13 +29,11 @@
 		        'allow_self_signed' => true
 	   		 	)
 			));
-
+			
 			// Creating the SOAP client 
 			$this->_SoapClient = new SoapClient($this->_wsdl, array(
 				"trace" => 1, 
-				"stream_context" => $context,
-				'location' => $wsdl,
-                'uri'      => $wsdl
+				"stream_context" => $context
 				)
 			);
 			$this->_SoapClient->__setSoapHeaders(array($SoapHeader));
