@@ -492,7 +492,7 @@
 
 	class MPENV {
 		const PRODUCTION = "https://api.monopond.com/fax/soap/v2.1/?wsdl";
-		const PRODUCTION_BETA = "https://beta.monopond.com/api/fax/v2.1?wsdl";
+		const PRODUCTION_MONOPOND = "https://faxapi.monopond.com/api/fax/v2.1?wsdl";
 		const TEST = "http://test.api.monopond.com/fax/soap/v2.1/?wsdl";
 		const LOCAL = "http://localhost:8000/fax/soap/v2.1?wsdl";
 	}
